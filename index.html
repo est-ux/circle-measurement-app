@@ -253,6 +253,39 @@
             100% { background-position: 0% 50%; }
         }
     </style>
+    
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-analytics.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDc7eqzgUFokLXgroSCyHjOQROqiN1VnjI",
+            authDomain: "circle-measurement-app.firebaseapp.com",
+            projectId: "circle-measurement-app",
+            storageBucket: "circle-measurement-app.firebasestorage.app",
+            messagingSenderId: "808171996971",
+            appId: "1:808171996971:web:8b885d820ae00cd6ff276e",
+            measurementId: "G-R45TJT07KD"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getFirestore(app);
+
+        // Firebase 함수들을 전역으로 사용할 수 있도록 설정
+        window.firebaseApp = app;
+        window.firebaseDb = db;
+        window.firebaseCollection = collection;
+        window.firebaseAddDoc = addDoc;
+        window.firebaseOnSnapshot = onSnapshot;
+        window.firebaseQuery = query;
+        window.firebaseOrderBy = orderBy;
+    </script>
 </head>
 <body>
     <div id="app" class="min-h-screen p-4 relative">
@@ -855,6 +888,83 @@
         let methodsData = {};
         let sharedCalculationData = {};
         
+        // Firebase 실시간 데이터 동기화
+        function initializeFirebaseListeners() {
+            // 측정 데이터 실시간 동기화
+            const measurementQuery = window.firebaseQuery(window.firebaseCollection(window.firebaseDb, 'measurements'), window.firebaseOrderBy('timestamp', 'desc'));
+            window.firebaseOnSnapshot(measurementQuery, (snapshot) => {
+                measurementData = {};
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    measurementData[data.team] = {
+                        can: data.can,
+                        tuna: data.tuna,
+                        puzzle: data.puzzle
+                    };
+                });
+                displayMeasurementResults();
+            });
+            
+            // 지름 데이터 실시간 동기화
+            const diameterQuery = window.firebaseQuery(window.firebaseCollection(window.firebaseDb, 'diameters'), window.firebaseOrderBy('timestamp', 'desc'));
+            window.firebaseOnSnapshot(diameterQuery, (snapshot) => {
+                diameterData = {};
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    diameterData[data.team] = {
+                        tunaCirc: data.tunaCirc,
+                        tunaDiam: data.tunaDiam,
+                        sauryCirc: data.sauryCirc,
+                        sauryDiam: data.sauryDiam,
+                        canCirc: data.canCirc,
+                        canDiam: data.canDiam
+                    };
+                });
+                displayDiameterResults();
+            });
+            
+            // 수식 데이터 실시간 동기화
+            const formulaQuery = window.firebaseQuery(window.firebaseCollection(window.firebaseDb, 'formulas'), window.firebaseOrderBy('timestamp', 'desc'));
+            window.firebaseOnSnapshot(formulaQuery, (snapshot) => {
+                formulaData = {};
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    formulaData[data.team] = {
+                        formula: data.formula
+                    };
+                });
+            });
+            
+            // 파이 이름 데이터 실시간 동기화
+            const piNameQuery = window.firebaseQuery(window.firebaseCollection(window.firebaseDb, 'piNames'), window.firebaseOrderBy('timestamp', 'desc'));
+            window.firebaseOnSnapshot(piNameQuery, (snapshot) => {
+                piNameData = {};
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    piNameData[data.team] = {
+                        piName: data.piName,
+                        formula: data.formula
+                    };
+                });
+                displayPiNameResults();
+            });
+            
+            // 측정 방법 데이터 실시간 동기화
+            const methodsQuery = window.firebaseQuery(window.firebaseCollection(window.firebaseDb, 'methods'), window.firebaseOrderBy('timestamp', 'desc'));
+            window.firebaseOnSnapshot(methodsQuery, (snapshot) => {
+                methodsData = {};
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    methodsData[data.team] = {
+                        method1: data.method1,
+                        method2: data.method2,
+                        method3: data.method3
+                    };
+                });
+                displayMethodsResults();
+            });
+        }
+        
         // 소수점 자릿수 제한 함수
         function limitDecimalPlaces(input, places) {
             if (input.value.includes('.')) {
@@ -941,7 +1051,7 @@
         }
         
         // 활동 1-1: 측정방법 제출
-        function submitMethods() {
+        async function submitMethods() {
             const team = document.getElementById('team-select-1-1').value;
             const method1 = document.getElementById('method1-1').value;
             const method2 = document.getElementById('method2-1').value;
@@ -952,15 +1062,22 @@
                 return;
             }
             
-            methodsData[team] = {
-                method1: method1,
-                method2: method2,
-                method3: method3
-            };
-            
-            displayMethodsResults();
-            clearMethodsForm();
-            alert('제출이 완료되었습니다! 🎉');
+            try {
+                // Firebase에 데이터 저장
+                await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDb, 'methods'), {
+                    team: team,
+                    method1: method1,
+                    method2: method2 || '',
+                    method3: method3 || '',
+                    timestamp: new Date()
+                });
+                
+                clearMethodsForm();
+                alert('제출이 완료되었습니다! 🎉');
+            } catch (error) {
+                console.error('데이터 저장 중 오류 발생:', error);
+                alert('데이터 저장 중 오류가 발생했습니다. 다시 시도해주세요.');
+            }
         }
         
         function displayMethodsResults() {
@@ -1005,7 +1122,7 @@
         }
         
         // 활동 1-2: 측정 데이터 제출
-        function submitMeasurement() {
+        async function submitMeasurement() {
             const team = document.getElementById('team-select-1-2').value;
             const can = document.getElementById('can-circumference').value;
             const tuna = document.getElementById('tuna-circumference').value;
@@ -1016,15 +1133,22 @@
                 return;
             }
             
-            measurementData[team] = {
-                can: parseFloat(can),
-                tuna: parseFloat(tuna),
-                puzzle: parseFloat(puzzle)
-            };
-            
-            displayMeasurementResults();
-            clearMeasurementForm();
-            alert('제출이 완료되었습니다! 🎉');
+            try {
+                // Firebase에 데이터 저장
+                await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDb, 'measurements'), {
+                    team: team,
+                    can: parseFloat(can),
+                    tuna: parseFloat(tuna),
+                    puzzle: parseFloat(puzzle),
+                    timestamp: new Date()
+                });
+                
+                clearMeasurementForm();
+                alert('제출이 완료되었습니다! 🎉');
+            } catch (error) {
+                console.error('데이터 저장 중 오류 발생:', error);
+                alert('데이터 저장 중 오류가 발생했습니다. 다시 시도해주세요.');
+            }
         }
         
         function displayMeasurementResults() {
@@ -1167,7 +1291,7 @@
             });
         }
         
-        function submitDiameter() {
+        async function submitDiameter() {
             const team = document.getElementById('team-select-2').value;
             const canDiam = document.getElementById('can-diameter').value;
             const tunaDiam = document.getElementById('tuna-diameter').value;
@@ -1184,18 +1308,26 @@
             }
             
             const data = measurementData[team];
-            diameterData[team] = {
-                canCirc: data.can,
-                tunaCirc: data.tuna,
-                puzzleCirc: data.puzzle,
-                canDiam: parseFloat(canDiam),
-                tunaDiam: parseFloat(tunaDiam),
-                puzzleDiam: parseFloat(puzzleDiam)
-            };
             
-            displayDiameterResults();
-            clearDiameterForm();
-            alert('제출이 완료되었습니다! 🎉');
+            try {
+                // Firebase에 데이터 저장
+                await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDb, 'diameters'), {
+                    team: team,
+                    canCirc: data.can,
+                    tunaCirc: data.tuna,
+                    puzzleCirc: data.puzzle,
+                    canDiam: parseFloat(canDiam),
+                    tunaDiam: parseFloat(tunaDiam),
+                    puzzleDiam: parseFloat(puzzleDiam),
+                    timestamp: new Date()
+                });
+                
+                clearDiameterForm();
+                alert('제출이 완료되었습니다! 🎉');
+            } catch (error) {
+                console.error('데이터 저장 중 오류 발생:', error);
+                alert('데이터 저장 중 오류가 발생했습니다. 다시 시도해주세요.');
+            }
         }
         
         function displayDiameterResults() {
@@ -1415,7 +1547,7 @@
             });
         }
         
-        function submitFormula() {
+        async function submitFormula() {
             const team = document.getElementById('team-select-3').value;
             const first = document.getElementById('formula-first').value;
             const operator = document.getElementById('formula-operator').value;
@@ -1429,14 +1561,20 @@
             
             const formula = `${first} ${operator} ${number} = ${result}`;
             
-            formulaData[team] = {
-                formula: formula,
-                ...diameterData[team] // 기존 지름 데이터 포함
-            };
-            
-            displayFormulaResults();
-            clearFormulaForm();
-            alert('제출이 완료되었습니다! 🎉');
+            try {
+                // Firebase에 데이터 저장
+                await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDb, 'formulas'), {
+                    team: team,
+                    formula: formula,
+                    timestamp: new Date()
+                });
+                
+                clearFormulaForm();
+                alert('제출이 완료되었습니다! 🎉');
+            } catch (error) {
+                console.error('데이터 저장 중 오류 발생:', error);
+                alert('데이터 저장 중 오류가 발생했습니다. 다시 시도해주세요.');
+            }
         }
         
         function displayFormulaResults() {
@@ -1985,7 +2123,7 @@
         }
         
         // 활동 3-3: 파이 이름 제출
-        function submitPiName() {
+        async function submitPiName() {
             const team = document.getElementById('team-select-3-3').value;
             const piName = document.getElementById('pi-name').value;
             
@@ -1994,14 +2132,21 @@
                 return;
             }
             
-            piNameData[team] = {
-                piName: piName,
-                ...formulaData[team] // 기존 수식 데이터 포함
-            };
-            
-            displayPiNameResults();
-            clearPiNameForm();
-            alert('제출이 완료되었습니다! 🎉');
+            try {
+                // Firebase에 데이터 저장
+                await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDb, 'piNames'), {
+                    team: team,
+                    piName: piName,
+                    formula: formulaData[team]?.formula || '',
+                    timestamp: new Date()
+                });
+                
+                clearPiNameForm();
+                alert('제출이 완료되었습니다! 🎉');
+            } catch (error) {
+                console.error('데이터 저장 중 오류 발생:', error);
+                alert('데이터 저장 중 오류가 발생했습니다. 다시 시도해주세요.');
+            }
         }
         
         // 활동 3-3: 파이 이름 데이터 로드
@@ -2095,6 +2240,10 @@
         
         // 초기화
         document.addEventListener('DOMContentLoaded', function() {
+            // Firebase 리스너 초기화
+            initializeFirebaseListeners();
+            
+            // 기존 표시 함수들 (Firebase 리스너가 자동으로 호출함)
             displayMeasurementResults();
             displayDiameterResults();
             displayFormulaResults();
