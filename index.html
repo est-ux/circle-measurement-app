@@ -952,6 +952,7 @@
                 diameterData = {};
                 snapshot.forEach((doc) => {
                     const data = doc.data();
+                    console.log('지름 데이터 원본:', data); // 디버깅용
                     diameterData[data.team] = {
                         canCirc: data.canCirc,
                         canDiam: data.canDiam,
@@ -960,6 +961,7 @@
                         puzzleCirc: data.puzzleCirc,
                         puzzleDiam: data.puzzleDiam
                     };
+                    console.log('지름 데이터 저장:', diameterData[data.team]); // 디버깅용
                 });
                 displayDiameterResults();
             }, (error) => {
@@ -973,10 +975,13 @@
                 formulaData = {};
                 snapshot.forEach((doc) => {
                     const data = doc.data();
+                    console.log('수식 데이터 원본:', data); // 디버깅용
                     formulaData[data.team] = {
                         formula: data.formula
                     };
+                    console.log('수식 데이터 저장:', formulaData[data.team]); // 디버깅용
                 });
+                console.log('최종 formulaData:', formulaData); // 디버깅용
                 displayFormulaResults();
             }, (error) => {
                 console.error('수식 데이터 리스너 오류:', error);
@@ -1558,6 +1563,7 @@
         
         function displayDiameterResults() {
             const resultsDiv = document.getElementById('diameter-results');
+            console.log('displayDiameterResults 호출, diameterData:', diameterData); // 디버깅용
             if (Object.keys(diameterData).length === 0) {
                 resultsDiv.innerHTML = '<p class="text-center text-gray-500 text-xl">아직 제출된 결과가 없습니다.</p>';
                 return;
@@ -1565,6 +1571,7 @@
             
             let html = '';
             for (const [team, data] of Object.entries(diameterData)) {
+                console.log(`${team} 데이터:`, data); // 디버깅용
                 html += `
                     <div class="bg-white p-4 rounded-xl shadow-lg border-l-4 border-green-500 mb-3">
                         <h4 class="font-bold text-lg text-green-600 mb-3 text-center bg-green-50 py-2 rounded-lg">${team} - 지름 측정 결과</h4>
@@ -1788,6 +1795,8 @@
             const formula = `${first} ${operator} ${number} = ${result}`;
             
             try {
+                console.log('수식 제출 시작:', { team, formula }); // 디버깅용
+                
                 // 기존 모둠 데이터 삭제
                 await deleteExistingTeamData('formulas', team);
                 
@@ -1798,10 +1807,13 @@
                     timestamp: new Date()
                 });
                 
+                console.log('Firebase 저장 완료'); // 디버깅용
+                
                 // 로컬 데이터도 즉시 업데이트
                 formulaData[team] = {
                     formula: formula
                 };
+                console.log('로컬 데이터 업데이트:', formulaData); // 디버깅용
                 displayFormulaResults();
                 
                 clearFormulaForm();
@@ -1814,6 +1826,7 @@
         
         function displayFormulaResults() {
             const resultsDiv = document.getElementById('formula-results');
+            console.log('displayFormulaResults 호출, formulaData:', formulaData); // 디버깅용
             if (Object.keys(formulaData).length === 0) {
                 resultsDiv.innerHTML = '<p class="text-center text-gray-500 text-xl">아직 제출된 결과가 없습니다.</p>';
                 return;
@@ -1821,6 +1834,7 @@
             
             let html = '';
             for (const [team, data] of Object.entries(formulaData)) {
+                console.log(`${team} 수식 데이터:`, data); // 디버깅용
                 html += `
                     <div class="bg-white p-4 rounded-xl shadow-lg border-l-4 border-purple-500 mb-3">
                         <h4 class="font-bold text-lg text-purple-600 mb-3 text-center bg-purple-50 py-2 rounded-lg">${team}</h4>
