@@ -890,9 +890,12 @@
         
         // Firebase 실시간 데이터 동기화
         function initializeFirebaseListeners() {
+            console.log('Firebase 리스너 초기화 시작');
+            
             // 측정 데이터 실시간 동기화
             const measurementQuery = window.firebaseQuery(window.firebaseCollection(window.firebaseDb, 'measurements'), window.firebaseOrderBy('timestamp', 'desc'));
             window.firebaseOnSnapshot(measurementQuery, (snapshot) => {
+                console.log('측정 데이터 업데이트:', snapshot.size, '개 문서');
                 measurementData = {};
                 snapshot.forEach((doc) => {
                     const data = doc.data();
@@ -903,11 +906,14 @@
                     };
                 });
                 displayMeasurementResults();
+            }, (error) => {
+                console.error('측정 데이터 리스너 오류:', error);
             });
             
             // 지름 데이터 실시간 동기화
             const diameterQuery = window.firebaseQuery(window.firebaseCollection(window.firebaseDb, 'diameters'), window.firebaseOrderBy('timestamp', 'desc'));
             window.firebaseOnSnapshot(diameterQuery, (snapshot) => {
+                console.log('지름 데이터 업데이트:', snapshot.size, '개 문서');
                 diameterData = {};
                 snapshot.forEach((doc) => {
                     const data = doc.data();
@@ -921,11 +927,14 @@
                     };
                 });
                 displayDiameterResults();
+            }, (error) => {
+                console.error('지름 데이터 리스너 오류:', error);
             });
             
             // 수식 데이터 실시간 동기화
             const formulaQuery = window.firebaseQuery(window.firebaseCollection(window.firebaseDb, 'formulas'), window.firebaseOrderBy('timestamp', 'desc'));
             window.firebaseOnSnapshot(formulaQuery, (snapshot) => {
+                console.log('수식 데이터 업데이트:', snapshot.size, '개 문서');
                 formulaData = {};
                 snapshot.forEach((doc) => {
                     const data = doc.data();
@@ -933,11 +942,14 @@
                         formula: data.formula
                     };
                 });
+            }, (error) => {
+                console.error('수식 데이터 리스너 오류:', error);
             });
             
             // 파이 이름 데이터 실시간 동기화
             const piNameQuery = window.firebaseQuery(window.firebaseCollection(window.firebaseDb, 'piNames'), window.firebaseOrderBy('timestamp', 'desc'));
             window.firebaseOnSnapshot(piNameQuery, (snapshot) => {
+                console.log('파이 이름 데이터 업데이트:', snapshot.size, '개 문서');
                 piNameData = {};
                 snapshot.forEach((doc) => {
                     const data = doc.data();
@@ -947,11 +959,14 @@
                     };
                 });
                 displayPiNameResults();
+            }, (error) => {
+                console.error('파이 이름 데이터 리스너 오류:', error);
             });
             
             // 측정 방법 데이터 실시간 동기화
             const methodsQuery = window.firebaseQuery(window.firebaseCollection(window.firebaseDb, 'methods'), window.firebaseOrderBy('timestamp', 'desc'));
             window.firebaseOnSnapshot(methodsQuery, (snapshot) => {
+                console.log('측정 방법 데이터 업데이트:', snapshot.size, '개 문서');
                 methodsData = {};
                 snapshot.forEach((doc) => {
                     const data = doc.data();
@@ -962,6 +977,8 @@
                     };
                 });
                 displayMethodsResults();
+            }, (error) => {
+                console.error('측정 방법 데이터 리스너 오류:', error);
             });
         }
         
@@ -1072,6 +1089,14 @@
                     timestamp: new Date()
                 });
                 
+                // 로컬 데이터도 즉시 업데이트
+                methodsData[team] = {
+                    method1: method1,
+                    method2: method2,
+                    method3: method3
+                };
+                displayMethodsResults();
+                
                 clearMethodsForm();
                 alert('제출이 완료되었습니다! 🎉');
             } catch (error) {
@@ -1142,6 +1167,14 @@
                     puzzle: parseFloat(puzzle),
                     timestamp: new Date()
                 });
+                
+                // 로컬 데이터도 즉시 업데이트
+                measurementData[team] = {
+                    can: parseFloat(can),
+                    tuna: parseFloat(tuna),
+                    puzzle: parseFloat(puzzle)
+                };
+                displayMeasurementResults();
                 
                 clearMeasurementForm();
                 alert('제출이 완료되었습니다! 🎉');
