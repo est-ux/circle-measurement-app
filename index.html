@@ -982,7 +982,16 @@
                     console.log('수식 데이터 저장:', formulaData[data.team]); // 디버깅용
                 });
                 console.log('최종 formulaData:', formulaData); // 디버깅용
-                displayFormulaResults();
+                
+                // DOM 요소 확인
+                const resultsDiv = document.getElementById('formula-results');
+                console.log('formula-results 요소:', resultsDiv); // 디버깅용
+                
+                if (resultsDiv) {
+                    displayFormulaResults();
+                } else {
+                    console.error('formula-results 요소를 찾을 수 없습니다!');
+                }
             }, (error) => {
                 console.error('수식 데이터 리스너 오류:', error);
             });
@@ -1536,6 +1545,14 @@
             }
             
             const data = measurementData[team];
+            console.log('지름 제출 시 measurementData:', data); // 디버깅용
+            
+            // 안전한 데이터 처리
+            const canCirc = data.can || 0;
+            const tunaCirc = data.tuna || 0;
+            const puzzleCirc = data.puzzle || 0;
+            
+            console.log('처리된 원주 데이터:', { canCirc, tunaCirc, puzzleCirc }); // 디버깅용
             
             try {
                 // 기존 모둠 데이터 삭제
@@ -1544,9 +1561,9 @@
                 // Firebase에 새 데이터 저장
                 await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDb, 'diameters'), {
                     team: team,
-                    canCirc: data.can,
-                    tunaCirc: data.tuna,
-                    puzzleCirc: data.puzzle,
+                    canCirc: canCirc,
+                    tunaCirc: tunaCirc,
+                    puzzleCirc: puzzleCirc,
                     canDiam: parseFloat(canDiam),
                     tunaDiam: parseFloat(tunaDiam),
                     puzzleDiam: parseFloat(puzzleDiam),
@@ -1581,8 +1598,8 @@
                                     <div class="font-semibold text-sm text-blue-700">🥤 음료수 캔</div>
                                 </div>
                                 <div class="flex justify-between text-sm">
-                                    <span class="text-blue-600">원주: ${data.canCirc}cm</span>
-                                    <span class="font-bold text-blue-800">지름: ${data.canDiam}cm</span>
+                                    <span class="text-blue-600">원주: ${data.canCirc || '측정 안됨'}cm</span>
+                                    <span class="font-bold text-blue-800">지름: ${data.canDiam || '입력 안됨'}cm</span>
                                 </div>
                             </div>
                             <div class="bg-green-50 p-3 rounded-lg border-l-4 border-green-400">
@@ -1590,8 +1607,8 @@
                                     <div class="font-semibold text-sm text-green-700">🥫 참치 통조림</div>
                                 </div>
                                 <div class="flex justify-between text-sm">
-                                    <span class="text-green-600">원주: ${data.tunaCirc}cm</span>
-                                    <span class="font-bold text-green-800">지름: ${data.tunaDiam}cm</span>
+                                    <span class="text-green-600">원주: ${data.tunaCirc || '측정 안됨'}cm</span>
+                                    <span class="font-bold text-green-800">지름: ${data.tunaDiam || '입력 안됨'}cm</span>
                                 </div>
                             </div>
                             <div class="bg-yellow-50 p-3 rounded-lg border-l-4 border-yellow-400">
@@ -1599,8 +1616,8 @@
                                     <div class="font-semibold text-sm text-yellow-700">🧩 퍼즐통</div>
                                 </div>
                                 <div class="flex justify-between text-sm">
-                                    <span class="text-yellow-600">원주: ${data.puzzleCirc}cm</span>
-                                    <span class="font-bold text-yellow-800">지름: ${data.puzzleDiam}cm</span>
+                                    <span class="text-yellow-600">원주: ${data.puzzleCirc || '측정 안됨'}cm</span>
+                                    <span class="font-bold text-yellow-800">지름: ${data.puzzleDiam || '입력 안됨'}cm</span>
                                 </div>
                             </div>
                         </div>
@@ -1827,7 +1844,15 @@
         function displayFormulaResults() {
             const resultsDiv = document.getElementById('formula-results');
             console.log('displayFormulaResults 호출, formulaData:', formulaData); // 디버깅용
+            console.log('resultsDiv 요소:', resultsDiv); // 디버깅용
+            
+            if (!resultsDiv) {
+                console.error('formula-results 요소를 찾을 수 없습니다!');
+                return;
+            }
+            
             if (Object.keys(formulaData).length === 0) {
+                console.log('수식 데이터가 없어서 기본 메시지 표시');
                 resultsDiv.innerHTML = '<p class="text-center text-gray-500 text-xl">아직 제출된 결과가 없습니다.</p>';
                 return;
             }
