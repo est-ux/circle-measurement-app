@@ -259,7 +259,7 @@
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-analytics.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
         // Your web app's Firebase configuration
         const firebaseConfig = {
@@ -285,6 +285,9 @@
         window.firebaseOnSnapshot = onSnapshot;
         window.firebaseQuery = query;
         window.firebaseOrderBy = orderBy;
+        window.firebaseGetDocs = getDocs;
+        window.firebaseDeleteDoc = deleteDoc;
+        window.firebaseDoc = doc;
     </script>
 </head>
 <body>
@@ -397,7 +400,12 @@
                     </div>
                     
                     <div class="measurement-card">
-                        <h3 class="text-2xl font-bold mb-6 text-center">👥 우리 반 친구들이 생각한 원주 측정 방법</h3>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-center">👥 우리 반 친구들이 생각한 원주 측정 방법</h3>
+                            <button onclick="clearAllMethods()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+                                🗑️ 기존 자료 삭제
+                            </button>
+                        </div>
                         <div id="methods-results" class="space-y-4 max-h-[500px] overflow-y-auto text-base">
                             <p class="text-center text-gray-500 text-lg">아직 제출된 결과가 없습니다.</p>
                         </div>
@@ -454,7 +462,12 @@
                     </div>
                     
                     <div class="measurement-card">
-                        <h3 class="text-2xl font-bold mb-6 text-center">👥 우리 반 친구들의 원주 측정 결과</h3>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-center">👥 우리 반 친구들의 원주 측정 결과</h3>
+                            <button onclick="clearAllMeasurements()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+                                🗑️ 기존 자료 삭제
+                            </button>
+                        </div>
                         <div id="measurement-results" class="space-y-4 max-h-[500px] overflow-y-auto text-base">
                             <p class="text-center text-gray-500 text-lg">아직 제출된 결과가 없습니다.</p>
                         </div>
@@ -572,7 +585,12 @@
                     </div>
                     
                     <div class="measurement-card">
-                        <h3 class="text-2xl font-bold mb-6 text-center">👥 우리 반 친구들의 지름 측정 결과</h3>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-center">👥 우리 반 친구들의 지름 측정 결과</h3>
+                            <button onclick="clearAllDiameters()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+                                🗑️ 기존 자료 삭제
+                            </button>
+                        </div>
                         <div id="diameter-results" class="space-y-4 max-h-[500px] overflow-y-auto text-base">
                             <p class="text-center text-gray-500 text-lg">아직 제출된 결과가 없습니다.</p>
                         </div>
@@ -669,7 +687,12 @@
                     </div>
                     
                     <div class="measurement-card">
-                        <h3 class="text-2xl font-bold mb-6 text-center">👥 우리 반 친구들이 생각한 원주가 가진 규칙</h3>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-center">👥 우리 반 친구들이 생각한 원주가 가진 규칙</h3>
+                            <button onclick="clearAllFormulas()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+                                🗑️ 기존 자료 삭제
+                            </button>
+                        </div>
                         <div id="formula-results" class="space-y-4 max-h-[500px] overflow-y-auto text-base">
                             <p class="text-center text-gray-500 text-lg">아직 제출된 결과가 없습니다.</p>
                         </div>
@@ -867,7 +890,12 @@
                     </div>
                     
                     <div class="measurement-card">
-                        <h3 class="text-2xl font-bold mb-6 text-center">👥 우리반 친구들의 이름 제안</h3>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-center">👥 우리반 친구들의 이름 제안</h3>
+                            <button onclick="clearAllPiNames()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+                                🗑️ 기존 자료 삭제
+                            </button>
+                        </div>
                         <div id="pi-name-results" class="space-y-4 max-h-[500px] overflow-y-auto text-base">
                             <p class="text-center text-gray-500 text-lg">아직 제출된 제안이 없습니다.</p>
                         </div>
@@ -980,6 +1008,102 @@
             }, (error) => {
                 console.error('측정 방법 데이터 리스너 오류:', error);
             });
+        }
+        
+        // Firebase 데이터 삭제 함수들
+        async function clearAllMethods() {
+            if (!confirm('모든 측정 방법 데이터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+                return;
+            }
+            
+            try {
+                const querySnapshot = await window.firebaseGetDocs(window.firebaseCollection(window.firebaseDb, 'methods'));
+                const deletePromises = querySnapshot.docs.map(doc => window.firebaseDeleteDoc(doc.ref));
+                await Promise.all(deletePromises);
+                
+                methodsData = {};
+                displayMethodsResults();
+                alert('측정 방법 데이터가 모두 삭제되었습니다! 🗑️');
+            } catch (error) {
+                console.error('데이터 삭제 중 오류 발생:', error);
+                alert('데이터 삭제 중 오류가 발생했습니다.');
+            }
+        }
+        
+        async function clearAllMeasurements() {
+            if (!confirm('모든 원주 측정 데이터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+                return;
+            }
+            
+            try {
+                const querySnapshot = await window.firebaseGetDocs(window.firebaseCollection(window.firebaseDb, 'measurements'));
+                const deletePromises = querySnapshot.docs.map(doc => window.firebaseDeleteDoc(doc.ref));
+                await Promise.all(deletePromises);
+                
+                measurementData = {};
+                displayMeasurementResults();
+                alert('원주 측정 데이터가 모두 삭제되었습니다! 🗑️');
+            } catch (error) {
+                console.error('데이터 삭제 중 오류 발생:', error);
+                alert('데이터 삭제 중 오류가 발생했습니다.');
+            }
+        }
+        
+        async function clearAllDiameters() {
+            if (!confirm('모든 지름 측정 데이터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+                return;
+            }
+            
+            try {
+                const querySnapshot = await window.firebaseGetDocs(window.firebaseCollection(window.firebaseDb, 'diameters'));
+                const deletePromises = querySnapshot.docs.map(doc => window.firebaseDeleteDoc(doc.ref));
+                await Promise.all(deletePromises);
+                
+                diameterData = {};
+                displayDiameterResults();
+                alert('지름 측정 데이터가 모두 삭제되었습니다! 🗑️');
+            } catch (error) {
+                console.error('데이터 삭제 중 오류 발생:', error);
+                alert('데이터 삭제 중 오류가 발생했습니다.');
+            }
+        }
+        
+        async function clearAllFormulas() {
+            if (!confirm('모든 수식 데이터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+                return;
+            }
+            
+            try {
+                const querySnapshot = await window.firebaseGetDocs(window.firebaseCollection(window.firebaseDb, 'formulas'));
+                const deletePromises = querySnapshot.docs.map(doc => window.firebaseDeleteDoc(doc.ref));
+                await Promise.all(deletePromises);
+                
+                formulaData = {};
+                displayFormulaResults();
+                alert('수식 데이터가 모두 삭제되었습니다! 🗑️');
+            } catch (error) {
+                console.error('데이터 삭제 중 오류 발생:', error);
+                alert('데이터 삭제 중 오류가 발생했습니다.');
+            }
+        }
+        
+        async function clearAllPiNames() {
+            if (!confirm('모든 파이 이름 데이터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+                return;
+            }
+            
+            try {
+                const querySnapshot = await window.firebaseGetDocs(window.firebaseCollection(window.firebaseDb, 'piNames'));
+                const deletePromises = querySnapshot.docs.map(doc => window.firebaseDeleteDoc(doc.ref));
+                await Promise.all(deletePromises);
+                
+                piNameData = {};
+                displayPiNameResults();
+                alert('파이 이름 데이터가 모두 삭제되었습니다! 🗑️');
+            } catch (error) {
+                console.error('데이터 삭제 중 오류 발생:', error);
+                alert('데이터 삭제 중 오류가 발생했습니다.');
+            }
         }
         
         // 소수점 자릿수 제한 함수
