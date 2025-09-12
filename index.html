@@ -402,7 +402,7 @@
                     <div class="measurement-card">
                         <div class="flex justify-between items-center mb-6">
                             <h3 class="text-2xl font-bold text-center">👥 우리 반 친구들이 생각한 원주 측정 방법</h3>
-                            <button onclick="clearAllMethods()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+                            <button onclick="clearAllMethods()" class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg text-base font-bold transition-colors shadow-lg">
                                 🗑️ 기존 자료 삭제
                             </button>
                         </div>
@@ -464,7 +464,7 @@
                     <div class="measurement-card">
                         <div class="flex justify-between items-center mb-6">
                             <h3 class="text-2xl font-bold text-center">👥 우리 반 친구들의 원주 측정 결과</h3>
-                            <button onclick="clearAllMeasurements()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+                            <button onclick="clearAllMeasurements()" class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg text-base font-bold transition-colors shadow-lg">
                                 🗑️ 기존 자료 삭제
                             </button>
                         </div>
@@ -587,7 +587,7 @@
                     <div class="measurement-card">
                         <div class="flex justify-between items-center mb-6">
                             <h3 class="text-2xl font-bold text-center">👥 우리 반 친구들의 지름 측정 결과</h3>
-                            <button onclick="clearAllDiameters()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+                            <button onclick="clearAllDiameters()" class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg text-base font-bold transition-colors shadow-lg">
                                 🗑️ 기존 자료 삭제
                             </button>
                         </div>
@@ -689,7 +689,7 @@
                     <div class="measurement-card">
                         <div class="flex justify-between items-center mb-6">
                             <h3 class="text-2xl font-bold text-center">👥 우리 반 친구들이 생각한 원주가 가진 규칙</h3>
-                            <button onclick="clearAllFormulas()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+                            <button onclick="clearAllFormulas()" class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg text-base font-bold transition-colors shadow-lg">
                                 🗑️ 기존 자료 삭제
                             </button>
                         </div>
@@ -892,7 +892,7 @@
                     <div class="measurement-card">
                         <div class="flex justify-between items-center mb-6">
                             <h3 class="text-2xl font-bold text-center">👥 우리반 친구들의 이름 제안</h3>
-                            <button onclick="clearAllPiNames()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+                            <button onclick="clearAllPiNames()" class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg text-base font-bold transition-colors shadow-lg">
                                 🗑️ 기존 자료 삭제
                             </button>
                         </div>
@@ -927,12 +927,14 @@
                 measurementData = {};
                 snapshot.forEach((doc) => {
                     const data = doc.data();
+                    console.log('측정 데이터:', data); // 디버깅용
                     measurementData[data.team] = {
                         can: data.can,
                         tuna: data.tuna,
                         puzzle: data.puzzle
                     };
                 });
+                console.log('최종 measurementData:', measurementData); // 디버깅용
                 displayMeasurementResults();
             }, (error) => {
                 console.error('측정 데이터 리스너 오류:', error);
@@ -1523,7 +1525,7 @@
                                     <div class="font-semibold text-sm text-yellow-700">🧩 퍼즐통</div>
                                 </div>
                                 <div class="flex justify-between text-sm">
-                                    <span class="text-yellow-600">원주: ${data.puzzleCirc}cm</span>
+                                    <span class="text-yellow-600">원주: ${data.puzzleCirc || data.puzzle}cm</span>
                                     <span class="font-bold text-yellow-800">지름: ${data.puzzleDiam}cm</span>
                                 </div>
                             </div>
