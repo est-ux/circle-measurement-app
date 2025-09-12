@@ -252,6 +252,268 @@
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
+        
+        /* 지름 측정 시뮬레이터 스타일 */
+        .diameter-simulator-container {
+          max-width: 1000px;
+          margin: 0 auto;
+        }
+        
+        .diameter-simulator-container .toolbar {
+          display: flex;
+          gap: 15px;
+          align-items: center;
+          justify-content: space-between;
+          background: #ffffff;
+          border: 2px solid #e2e8f0;
+          border-radius: 15px;
+          padding: 15px 20px;
+          box-shadow: 0 6px 20px var(--shadow);
+          margin-bottom: 15px;
+          flex-wrap: wrap;
+        }
+        
+        .diameter-simulator-container .control-group {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          flex-wrap: wrap;
+        }
+        
+        .diameter-simulator-container .control-group label {
+          font-size: 14px;
+          color: #1a365d;
+          font-weight: 600;
+        }
+        
+        .diameter-simulator-container .control-group input[type="range"] {
+          width: 200px;
+          height: 6px;
+          border-radius: 3px;
+          background: #e2e8f0;
+          outline: none;
+          -webkit-appearance: none;
+        }
+        
+        .diameter-simulator-container .control-group input[type="range"]::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          background: var(--primary);
+          cursor: pointer;
+          box-shadow: 0 2px 6px var(--shadow);
+        }
+        
+        .diameter-simulator-container .control-group input[type="checkbox"] {
+          width: 18px;
+          height: 18px;
+          accent-color: var(--primary);
+        }
+        
+        .diameter-simulator-container .btn {
+          appearance: none;
+          border: none;
+          background: #3182ce;
+          color: white;
+          padding: 10px 16px;
+          border-radius: 12px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          font-size: 14px;
+          box-shadow: 0 4px 12px rgba(49, 130, 206, 0.3);
+        }
+        
+        .diameter-simulator-container .btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 16px rgba(49, 130, 206, 0.4);
+        }
+        
+        .diameter-simulator-container .btn.secondary {
+          background: #38a169;
+          box-shadow: 0 4px 12px rgba(56, 161, 105, 0.3);
+        }
+        
+        .diameter-simulator-container .btn.ghost {
+          background: #f7fafc;
+          color: #1a365d;
+          border: 2px solid #e2e8f0;
+          box-shadow: 0 2px 8px var(--shadow);
+        }
+        
+        .diameter-simulator-container .btn:active {
+          transform: translateY(0);
+        }
+        
+        .diameter-simulator-container #board {
+          display: block;
+          width: 100%;
+          background: #ffffff;
+          border: 2px solid #e2e8f0;
+          border-radius: 20px;
+          box-shadow: 0 10px 30px var(--shadow);
+          margin-bottom: 15px;
+        }
+        
+        .diameter-simulator-container .legend {
+          display: flex;
+          gap: 20px;
+          align-items: center;
+          font-size: 14px;
+          color: #1a365d;
+          margin: 15px 0;
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+        
+        .diameter-simulator-container .legend-item {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          background: #ffffff;
+          padding: 8px 12px;
+          border-radius: 20px;
+          box-shadow: 0 2px 8px var(--shadow);
+          border: 1px solid #e2e8f0;
+        }
+        
+        .diameter-simulator-container .dot {
+          width: 14px;
+          height: 14px;
+          border-radius: 50%;
+          display: inline-block;
+        }
+        
+        .diameter-simulator-container .measurements {
+          display: flex;
+          gap: 15px;
+          flex-wrap: wrap;
+          margin-top: 15px;
+          justify-content: center;
+        }
+        
+        .diameter-simulator-container .measurement-card {
+          background: #ffffff;
+          border: 2px solid #e2e8f0;
+          border-radius: 15px;
+          padding: 15px 20px;
+          font-size: 14px;
+          color: #1a365d;
+          box-shadow: 0 4px 12px var(--shadow);
+          min-width: 180px;
+          text-align: center;
+        }
+        
+        .diameter-simulator-container .measurement-card.primary {
+          border-color: #3182ce;
+          background: linear-gradient(45deg, #ebf8ff, #f0f9ff);
+          color: #1a365d;
+        }
+        
+        .diameter-simulator-container .measurement-card.success {
+          border-color: #38a169;
+          background: linear-gradient(45deg, #f0fff4, #f0fdf4);
+          color: #1a365d;
+        }
+        
+        .diameter-simulator-container .measurement-card.warning {
+          border-color: #d69e2e;
+          background: linear-gradient(45deg, #fffbeb, #fefce8);
+          color: #1a365d;
+        }
+        
+        .diameter-simulator-container .measurement-value {
+          font-size: 1.2em;
+          font-weight: bold;
+          margin-top: 5px;
+        }
+        
+        .diameter-simulator-container .instructions {
+          background: linear-gradient(45deg, #fff7ed, #fffbeb);
+          padding: 20px;
+          border-radius: 15px;
+          border-left: 5px solid #d69e2e;
+          margin: 20px 0;
+          box-shadow: 0 4px 12px var(--shadow);
+        }
+        
+        .diameter-simulator-container .instructions h3 {
+          color: #d69e2e;
+          margin-bottom: 10px;
+          font-size: 1.1em;
+        }
+        
+        .diameter-simulator-container .instructions ol {
+          margin-left: 20px;
+        }
+        
+        .diameter-simulator-container .instructions li {
+          margin: 8px 0;
+          font-size: 1em;
+          line-height: 1.5;
+          color: #1a365d;
+        }
+        
+        .diameter-simulator-container .feedback {
+          text-align: center;
+          padding: 15px;
+          border-radius: 15px;
+          margin: 15px 0;
+          font-weight: bold;
+          font-size: 1.1em;
+          min-height: 50px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        
+        .diameter-simulator-container .feedback.success {
+          background: linear-gradient(45deg, #f0fff4, #dcfce7);
+          color: #38a169;
+          border: 2px solid #38a169;
+        }
+        
+        .diameter-simulator-container .feedback.warning {
+          background: linear-gradient(45deg, #fffbeb, #fef3c7);
+          color: #d69e2e;
+          border: 2px solid #d69e2e;
+        }
+        
+        .diameter-simulator-container .feedback.error {
+          background: linear-gradient(45deg, #fef2f2, #fecaca);
+          color: #e53e3e;
+          border: 2px solid #e53e3e;
+        }
+        
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+          .diameter-simulator-container .toolbar {
+            flex-direction: column;
+            gap: 10px;
+          }
+          
+          .diameter-simulator-container .control-group {
+            justify-content: center;
+          }
+          
+          .diameter-simulator-container .control-group input[type="range"] {
+            width: 150px;
+          }
+          
+          .diameter-simulator-container .legend {
+            gap: 10px;
+          }
+          
+          .diameter-simulator-container .measurements {
+            flex-direction: column;
+            align-items: center;
+          }
+          
+          .diameter-simulator-container .measurement-card {
+            min-width: 200px;
+          }
+        }
     </style>
     
     <!-- Firebase SDK -->
@@ -487,10 +749,14 @@
             </div>
             
             <!-- 활동 2 서브메뉴 -->
-            <div class="grid md:grid-cols-4 gap-8 mb-12">
+            <div class="grid md:grid-cols-5 gap-8 mb-12">
                 <button onclick="showSubActivity('activity2-1')" class="card p-8 text-center hover:bg-blue-50">
                     <div class="text-4xl mb-4">🎯</div>
                     <div class="font-semibold text-xl">지름은 무엇일까?</div>
+                </button>
+                <button onclick="showSubActivity('activity2-1-5')" class="card p-8 text-center hover:bg-purple-50">
+                    <div class="text-4xl mb-4">📐</div>
+                    <div class="font-semibold text-xl">지름 측정하는 법 알기</div>
                 </button>
                 <button onclick="showSubActivity('activity2-2')" class="card p-8 text-center hover:bg-green-50">
                     <div class="text-4xl mb-4">📏</div>
@@ -530,6 +796,76 @@
                         <div id="chord-length" class="text-3xl font-bold text-blue-600">30.00 cm</div>
                         <div id="diameter-message" class="text-sm text-gray-600 mt-2"></div>
                     </div>
+                </div>
+            </div>
+            
+            <!-- 활동 2-1.5: 지름 측정하는 법 알기 -->
+            <div id="activity2-1-5" class="hidden card p-8 mb-6">
+                <h2 class="text-4xl font-bold text-center mb-6 text-gray-800">📐 지름 측정하는 법 알기</h2>
+                <p class="text-center text-lg mb-6 text-gray-600">삼각자 두 개로 원의 지름을 정확히 재어보세요!</p>
+                
+                <div class="diameter-simulator-container">
+                    <div class="toolbar">
+                        <div class="control-group">
+                            <label>원의 크기: <span id="rVal">120</span> (단위)</label>
+                            <input id="radius" type="range" min="60" max="180" value="120" />
+                            <label><input id="snap" type="checkbox" checked> 자동 맞춤</label>
+                            <label><input id="showTrue" type="checkbox" checked> 정답 보기</label>
+                        </div>
+                        <div class="control-group">
+                            <button id="autoPlace" class="btn secondary">삼각자 자동 배치</button>
+                            <button id="randomize" class="btn ghost">새로운 원</button>
+                            <button id="reset" class="btn">처음부터</button>
+                        </div>
+                    </div>
+
+                    <canvas id="board" width="960" height="520"></canvas>
+
+                    <div class="legend">
+                        <div class="legend-item">
+                            <span class="dot" style="background: var(--circle)"></span>
+                            <span>원</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="dot" style="background: var(--tri)"></span>
+                            <span>왼쪽 삼각자</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="dot" style="background: var(--tri2)"></span>
+                            <span>오른쪽 삼각자</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="dot" style="background: var(--ruler)"></span>
+                            <span>눈금자 (1cm = 50단위)</span>
+                        </div>
+                    </div>
+
+                    <div class="measurements">
+                        <div class="measurement-card primary">
+                            <div>📏 측정한 지름</div>
+                            <div class="measurement-value" id="readMeasured">0.0 cm</div>
+                        </div>
+                        <div class="measurement-card success">
+                            <div>✅ 실제 지름</div>
+                            <div class="measurement-value" id="readTrue">0.0 cm</div>
+                        </div>
+                        <div class="measurement-card warning">
+                            <div>📊 오차</div>
+                            <div class="measurement-value" id="readDelta">0.0 mm</div>
+                        </div>
+                    </div>
+
+                    <div class="instructions">
+                        <h3>📚 사용 방법</h3>
+                        <ol>
+                            <li><strong>원을 드래그</strong>해서 위치를 바꿔보세요</li>
+                            <li><strong>삼각자를 드래그</strong>해서 원의 양쪽 끝에 맞춰보세요</li>
+                            <li><strong>자동 맞춤</strong>을 켜두면 정확한 위치에 자동으로 맞춰져요</li>
+                            <li>측정한 값과 실제 지름을 비교해보세요!</li>
+                        </ol>
+                    </div>
+
+                    <div class="feedback" id="feedback"></div>
                 </div>
             </div>
             
@@ -1230,6 +1566,7 @@
         function showSubActivity(subActivityId) {
             // 모든 서브 활동 숨기기
             document.getElementById('activity2-1').classList.remove('hidden');
+            document.getElementById('activity2-1-5').classList.add('hidden');
             document.getElementById('activity2-2').classList.add('hidden');
             document.getElementById('activity2-3').classList.add('hidden');
             document.getElementById('activity2-4').classList.add('hidden');
@@ -1241,6 +1578,8 @@
             
             if (subActivityId === 'activity2-1') {
                 initializeDiameterDemo();
+            } else if (subActivityId === 'activity2-1-5') {
+                // 지름 측정 시뮬레이터는 이미 초기화됨
             } else if (subActivityId === 'activity2-2') {
                 loadMeasurementDataForDiameter();
             } else if (subActivityId === 'activity2-4') {
@@ -2546,6 +2885,376 @@
             document.getElementById('pi-name').value = '';
         }
         
+        // 지름 측정 시뮬레이터 JavaScript
+        function initializeDiameterSimulator() {
+            const canvas = document.getElementById('board');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+
+            const rulerTop = 390;     // 눈금자의 윗변 y
+            const rulerHeight = 56;
+            const cmPx = 50;          // 1cm = 50단위
+            const mmPx = cmPx/10;     // 1mm = 5단위
+            const triHeight = 180, triWidth = 180;
+
+            const state = {
+                circle: { x: canvas.width/2, y: 0, r: 120 },
+                leftEdgeX: null,
+                rightEdgeX: null,
+                dragging: null, // 'left' | 'right' | 'circle' | null
+                snap: true,
+                showTrue: true
+            };
+
+            function enforceTangency(){
+                // 원은 항상 눈금자의 윗변에 접한다
+                state.circle.y = rulerTop - state.circle.r;
+            }
+
+            function autoPlaceTriangles(){
+                const {x, r} = state.circle;
+                state.leftEdgeX = x - r - 10;  // 살짝 바깥에서 시작
+                state.rightEdgeX = x + r + 10;
+            }
+
+            // 초기 배치
+            enforceTangency();
+            autoPlaceTriangles();
+
+            function pxToCm(px){ return px / cmPx; }
+            function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+            function getCss(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+            function drawRuler(){
+                ctx.fillStyle = '#e6eff6';
+                ctx.strokeStyle = '#90a4ae';
+                ctx.lineWidth = 2;
+                ctx.fillRect(40, rulerTop, canvas.width-80, rulerHeight);
+                ctx.strokeRect(40, rulerTop, canvas.width-80, rulerHeight);
+
+                // 눈금
+                ctx.beginPath();
+                for(let x=40; x<=canvas.width-40; x+=mmPx){
+                    const i = Math.round((x-40)/mmPx);
+                    const isCm = i % 10 === 0; 
+                    const isHalf = i % 5 === 0 && !isCm;
+                    const h = isCm ? 22 : isHalf ? 14 : 8;
+                    ctx.moveTo(x, rulerTop); 
+                    ctx.lineTo(x, rulerTop-h);
+                }
+                ctx.strokeStyle = '#263238'; 
+                ctx.lineWidth = 1.5; 
+                ctx.stroke();
+
+                // 숫자(cm)
+                ctx.fillStyle = '#374151'; 
+                ctx.font = 'bold 12px system-ui, sans-serif'; 
+                ctx.textAlign = 'center';
+                for(let x=40, cm=0; x<=canvas.width-40; x+=cmPx, cm++){ 
+                    ctx.fillText(cm, x, rulerTop-26); 
+                }
+            }
+
+            function drawCircle(){
+                const c = state.circle;
+                ctx.beginPath(); 
+                ctx.arc(c.x, c.y, c.r, 0, Math.PI*2);
+                ctx.fillStyle = '#00c896'; 
+                ctx.fill();
+                ctx.lineWidth = 3; 
+                ctx.strokeStyle = '#1f2937'; 
+                ctx.stroke();
+
+                // 지름 가이드 (점선)
+                const Lx = c.x - c.r, Rx = c.x + c.r;
+                ctx.setLineDash([8,8]);
+                ctx.beginPath(); 
+                ctx.moveTo(Lx, c.y); 
+                ctx.lineTo(Rx, c.y);
+                ctx.strokeStyle = '#64748b'; 
+                ctx.lineWidth = 2;
+                ctx.stroke(); 
+                ctx.setLineDash([]);
+
+                // 접점 표시
+                ctx.fillStyle = '#0f172a';
+                ctx.beginPath(); 
+                ctx.arc(Lx, c.y, 4, 0, Math.PI*2); 
+                ctx.fill();
+                ctx.beginPath(); 
+                ctx.arc(Rx, c.y, 4, 0, Math.PI*2); 
+                ctx.fill();
+            }
+
+            function drawSetSquare(edgeX, isLeft){
+                const baseY = rulerTop;
+                ctx.save(); 
+                ctx.beginPath();
+                if(isLeft){
+                    ctx.moveTo(edgeX, baseY);
+                    ctx.lineTo(edgeX, baseY - triHeight);
+                    ctx.lineTo(edgeX - triWidth, baseY);
+                } else {
+                    ctx.moveTo(edgeX, baseY);
+                    ctx.lineTo(edgeX, baseY - triHeight);
+                    ctx.lineTo(edgeX + triWidth, baseY);
+                }
+                ctx.closePath();
+                ctx.fillStyle = isLeft ? '#f7c948' : '#f7a13d'; 
+                ctx.fill();
+                ctx.lineWidth = 3; 
+                ctx.strokeStyle = '#374151'; 
+                ctx.stroke();
+
+                // 모서리(접선) 강조
+                ctx.beginPath(); 
+                ctx.moveTo(edgeX, baseY); 
+                ctx.lineTo(edgeX, baseY - triHeight);
+                ctx.lineWidth = 4; 
+                ctx.strokeStyle = '#0f172a'; 
+                ctx.stroke();
+
+                // 핸들
+                ctx.fillStyle = '#0f172a'; 
+                ctx.beginPath(); 
+                ctx.arc(edgeX, baseY - triHeight + 16, 6, 0, Math.PI*2); 
+                ctx.fill();
+
+                // 라벨
+                ctx.fillStyle = '#111827'; 
+                ctx.font = 'bold 13px system-ui, sans-serif'; 
+                ctx.textAlign = 'center';
+                ctx.fillText(isLeft?'왼쪽 삼각자':'오른쪽 삼각자', edgeX + (isLeft?-40:40), baseY - triHeight - 8);
+                ctx.restore();
+            }
+
+            function drawMeasurements(){
+                const {leftEdgeX, rightEdgeX, circle} = state;
+                const measuredPx = Math.abs(rightEdgeX - leftEdgeX);
+                const measuredCm = pxToCm(measuredPx);
+                const trueCm = pxToCm(circle.r*2);
+                const deltaMm = Math.round((measuredCm - trueCm) * 10 * 10) / 10; // mm 단위, 소수1자리
+
+                document.getElementById('readMeasured').textContent = `${measuredCm.toFixed(1)} cm`;
+                document.getElementById('readTrue').textContent = `${trueCm.toFixed(1)} cm`;
+                document.getElementById('readDelta').textContent = `${(deltaMm).toFixed(1)} mm`;
+
+                // 시각화
+                ctx.save();
+                const y = circle.y; 
+                ctx.strokeStyle = '#1a365d'; 
+                ctx.lineWidth = 3;
+                ctx.beginPath(); 
+                ctx.moveTo(state.leftEdgeX, y); 
+                ctx.lineTo(state.rightEdgeX, y); 
+                ctx.stroke();
+                drawArrow(state.leftEdgeX, y, -1); 
+                drawArrow(state.rightEdgeX, y, +1);
+                ctx.fillStyle = '#1a365d'; 
+                ctx.font = 'bold 14px system-ui, sans-serif'; 
+                ctx.textAlign = 'center';
+                ctx.fillText(`${measuredCm.toFixed(1)} cm`, (state.leftEdgeX+state.rightEdgeX)/2, y - 12);
+                ctx.restore();
+
+                // 피드백 표시
+                updateFeedback(measuredCm, trueCm, deltaMm);
+            }
+
+            function updateFeedback(measured, actual, error) {
+                const feedback = document.getElementById('feedback');
+                const errorAbs = Math.abs(error);
+                
+                if (errorAbs < 1) {
+                    feedback.textContent = '🎉 정말 잘했어요! 정확하게 측정했네요!';
+                    feedback.className = 'feedback success';
+                } else if (errorAbs < 3) {
+                    feedback.textContent = '👍 거의 정확해요! 조금만 더 조정해보세요!';
+                    feedback.className = 'feedback warning';
+                } else {
+                    feedback.textContent = '💪 다시 시도해보세요! 삼각자를 원의 양쪽 끝에 정확히 맞춰보세요!';
+                    feedback.className = 'feedback error';
+                }
+            }
+
+            function drawArrow(x,y,dir){ 
+                const len=18; 
+                ctx.strokeStyle = '#1a365d';
+                ctx.lineWidth = 2;
+                ctx.beginPath(); 
+                ctx.moveTo(x,y); 
+                ctx.lineTo(x+dir*len, y-8); 
+                ctx.moveTo(x,y); 
+                ctx.lineTo(x+dir*len, y+8); 
+                ctx.stroke(); 
+            }
+
+            function render(){
+                enforceTangency();
+                ctx.clearRect(0,0,canvas.width,canvas.height);
+                drawRuler(); 
+                drawCircle();
+                drawSetSquare(state.leftEdgeX,true); 
+                drawSetSquare(state.rightEdgeX,false);
+                drawMeasurements();
+
+                if(state.showTrue){
+                    const {x,r} = state.circle; 
+                    ctx.save(); 
+                    ctx.setLineDash([6,8]); 
+                    ctx.strokeStyle = '#38a169'; 
+                    ctx.lineWidth = 3;
+                    ctx.beginPath(); 
+                    ctx.moveTo(x-r, rulerTop); 
+                    ctx.lineTo(x-r, rulerTop - triHeight); 
+                    ctx.moveTo(x+r, rulerTop); 
+                    ctx.lineTo(x+r, rulerTop - triHeight); 
+                    ctx.stroke(); 
+                    ctx.restore();
+                }
+            }
+
+            // ===== 히트 테스트 & 드래그 =====
+            function hitTarget(mx,my){
+                // 1) 원부터 검사
+                const c = state.circle; 
+                const dist = Math.hypot(mx - c.x, my - c.y);
+                if(dist <= c.r + 8 && my <= rulerTop) return 'circle';
+
+                // 2) 삼각자 검사
+                const baseY = rulerTop, topY = baseY - triHeight;
+                const leftBx = {x1: state.leftEdgeX - triWidth, x2: state.leftEdgeX, y1: topY, y2: baseY};
+                const rightBx = {x1: state.rightEdgeX, x2: state.rightEdgeX + triWidth, y1: topY, y2: baseY};
+                if(mx>=leftBx.x1 && mx<=leftBx.x2 && my>=leftBx.y1 && my<=leftBx.y2) return 'left';
+                if(mx>=rightBx.x1 && mx<=rightBx.x2 && my>=rightBx.y1 && my<=rightBx.y2) return 'right';
+                return null;
+            }
+
+            function onPointerDown(e){
+                const rect = canvas.getBoundingClientRect();
+                const mx = (e.touches? e.touches[0].clientX : e.clientX) - rect.left;
+                const my = (e.touches? e.touches[0].clientY : e.clientY) - rect.top;
+                const hit = hitTarget(mx,my);
+                if(hit){ 
+                    state.dragging = hit; 
+                    e.preventDefault(); 
+                }
+            }
+
+            function onPointerMove(e){
+                if(!state.dragging) return;
+                const rect = canvas.getBoundingClientRect();
+                const mx = (e.touches? e.touches[0].clientX : e.clientX) - rect.left;
+
+                if(state.dragging==='left'){
+                    const maxX = state.rightEdgeX - 20;
+                    let x = clamp(mx, 40, maxX);
+                    if(state.snap){ 
+                        const target = state.circle.x - state.circle.r; 
+                        if(Math.abs(x-target)<15) x = target; 
+                    }
+                    state.leftEdgeX = x;
+                } else if(state.dragging==='right'){
+                    const minX = state.leftEdgeX + 20;
+                    let x = clamp(mx, minX, canvas.width-40);
+                    if(state.snap){ 
+                        const target = state.circle.x + state.circle.r; 
+                        if(Math.abs(x-target)<15) x = target; 
+                    }
+                    state.rightEdgeX = x;
+                } else if(state.dragging==='circle'){
+                    const r = state.circle.r;
+                    const min = 40 + r, max = canvas.width - 40 - r;
+                    state.circle.x = clamp(mx, min, max);
+                    enforceTangency();
+                }
+                render(); 
+                e.preventDefault();
+            }
+
+            function onPointerUp(){ 
+                state.dragging = null; 
+            }
+
+            // 이벤트 리스너
+            canvas.addEventListener('mousedown', onPointerDown);
+            canvas.addEventListener('mousemove', onPointerMove);
+            window.addEventListener('mouseup', onPointerUp);
+            canvas.addEventListener('touchstart', onPointerDown, {passive:false});
+            canvas.addEventListener('touchmove', onPointerMove, {passive:false});
+            canvas.addEventListener('touchend', onPointerUp);
+
+            // ===== 컨트롤 =====
+            const radiusEl = document.getElementById('radius');
+            const rVal = document.getElementById('rVal');
+            const snapEl = document.getElementById('snap');
+            const showTrueEl = document.getElementById('showTrue');
+
+            if (radiusEl) {
+                radiusEl.addEventListener('input', ()=>{
+                    const r = parseInt(radiusEl.value,10); 
+                    rVal.textContent = r; 
+                    state.circle.r = r; 
+                    enforceTangency(); 
+                    render();
+                });
+            }
+            
+            if (snapEl) {
+                snapEl.addEventListener('change', ()=>{ 
+                    state.snap = snapEl.checked; 
+                    render(); 
+                });
+            }
+            
+            if (showTrueEl) {
+                showTrueEl.addEventListener('change', ()=>{ 
+                    state.showTrue = showTrueEl.checked; 
+                    render(); 
+                });
+            }
+
+            const autoPlaceBtn = document.getElementById('autoPlace');
+            if (autoPlaceBtn) {
+                autoPlaceBtn.addEventListener('click', ()=>{ 
+                    autoPlaceTriangles(); 
+                    render(); 
+                });
+            }
+            
+            const randomizeBtn = document.getElementById('randomize');
+            if (randomizeBtn) {
+                randomizeBtn.addEventListener('click', ()=>{
+                    const r = Math.floor(80 + Math.random()*80);
+                    state.circle.r = r; 
+                    radiusEl.value = r; 
+                    rVal.textContent = r; 
+                    enforceTangency(); 
+                    autoPlaceTriangles(); 
+                    render();
+                });
+            }
+            
+            const resetBtn = document.getElementById('reset');
+            if (resetBtn) {
+                resetBtn.addEventListener('click', ()=>{
+                    state.circle = { x: canvas.width/2, y: 0, r: 120 }; 
+                    enforceTangency();
+                    radiusEl.value = 120; 
+                    rVal.textContent = 120; 
+                    state.snap = true; 
+                    snapEl.checked = true; 
+                    state.showTrue = true; 
+                    showTrueEl.checked = true;
+                    autoPlaceTriangles(); 
+                    render();
+                });
+            }
+
+            // 초기 렌더
+            render();
+        }
+
         // 초기화
         document.addEventListener('DOMContentLoaded', function() {
             // Firebase 리스너 초기화
@@ -2556,6 +3265,9 @@
             displayDiameterResults();
             displayFormulaResults();
             displayPiNameResults();
+            
+            // 지름 측정 시뮬레이터 초기화
+            initializeDiameterSimulator();
         });
     </script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97df4b1566e2aa41',t:'MTc1NzY3ODkzOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
