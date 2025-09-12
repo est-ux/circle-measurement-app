@@ -823,7 +823,12 @@
                     </div>
                     
                     <div class="measurement-card">
-                        <h3 class="text-2xl font-bold mb-6 text-center">👥 모둠 별 검토 결과</h3>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-center flex-1">👥 모둠 별 검토 결과</h3>
+                            <button onclick="clearAllCalculations()" class="bg-red-500 hover:bg-red-600 text-white px-8 py-4 rounded-lg text-lg font-bold transition-colors shadow-lg border-2 border-red-600">
+                                🗑️ 기존 자료 삭제
+                            </button>
+                        </div>
                         <div id="shared-calculation-results" class="space-y-4 max-h-[500px] overflow-y-auto text-base">
                             <p class="text-center text-gray-500 text-lg">아직 계산된 결과가 없습니다.</p>
                         </div>
@@ -1010,6 +1015,39 @@
             }, (error) => {
                 console.error('측정 방법 데이터 리스너 오류:', error);
             });
+            
+            // 계산 데이터 실시간 동기화
+            const calculationQuery = window.firebaseQuery(window.firebaseCollection(window.firebaseDb, 'calculations'), window.firebaseOrderBy('timestamp', 'desc'));
+            window.firebaseOnSnapshot(calculationQuery, (snapshot) => {
+                console.log('계산 데이터 업데이트:', snapshot.size, '개 문서');
+                sharedCalculationData = {};
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    sharedCalculationData[data.team] = {
+                        team: data.team,
+                        can: data.can,
+                        tuna: data.tuna,
+                        puzzle: data.puzzle,
+                        timestamp: data.timestamp
+                    };
+                });
+                displaySharedCalculationResults();
+            }, (error) => {
+                console.error('계산 데이터 리스너 오류:', error);
+            });
+        }
+        
+        // 기존 모둠 데이터 삭제 헬퍼 함수
+        async function deleteExistingTeamData(collection, team) {
+            try {
+                const querySnapshot = await window.firebaseGetDocs(window.firebaseCollection(window.firebaseDb, collection));
+                const deletePromises = querySnapshot.docs
+                    .filter(doc => doc.data().team === team)
+                    .map(doc => window.firebaseDeleteDoc(doc.ref));
+                await Promise.all(deletePromises);
+            } catch (error) {
+                console.error(`${collection}에서 ${team} 데이터 삭제 중 오류:`, error);
+            }
         }
         
         // Firebase 데이터 삭제 함수들
@@ -1102,6 +1140,25 @@
                 piNameData = {};
                 displayPiNameResults();
                 alert('파이 이름 데이터가 모두 삭제되었습니다! 🗑️');
+            } catch (error) {
+                console.error('데이터 삭제 중 오류 발생:', error);
+                alert('데이터 삭제 중 오류가 발생했습니다.');
+            }
+        }
+        
+        async function clearAllCalculations() {
+            if (!confirm('모든 계산 데이터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+                return;
+            }
+            
+            try {
+                const querySnapshot = await window.firebaseGetDocs(window.firebaseCollection(window.firebaseDb, 'calculations'));
+                const deletePromises = querySnapshot.docs.map(doc => window.firebaseDeleteDoc(doc.ref));
+                await Promise.all(deletePromises);
+                
+                sharedCalculationData = {};
+                displaySharedCalculationResults();
+                alert('계산 데이터가 모두 삭제되었습니다! 🗑️');
             } catch (error) {
                 console.error('데이터 삭제 중 오류 발생:', error);
                 alert('데이터 삭제 중 오류가 발생했습니다.');
@@ -1206,7 +1263,10 @@
             }
             
             try {
-                // Firebase에 데이터 저장
+                // 기존 모둠 데이터 삭제
+                await deleteExistingTeamData('methods', team);
+                
+                // Firebase에 새 데이터 저장
                 await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDb, 'methods'), {
                     team: team,
                     method1: method1,
@@ -1285,7 +1345,10 @@
             }
             
             try {
-                // Firebase에 데이터 저장
+                // 기존 모둠 데이터 삭제
+                await deleteExistingTeamData('measurements', team);
+                
+                // Firebase에 새 데이터 저장
                 await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDb, 'measurements'), {
                     team: team,
                     can: parseFloat(can),
@@ -1469,7 +1532,10 @@
             const data = measurementData[team];
             
             try {
-                // Firebase에 데이터 저장
+                // 기존 모둠 데이터 삭제
+                await deleteExistingTeamData('diameters', team);
+                
+                // Firebase에 새 데이터 저장
                 await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDb, 'diameters'), {
                     team: team,
                     canCirc: data.can,
@@ -1721,12 +1787,21 @@
             const formula = `${first} ${operator} ${number} = ${result}`;
             
             try {
-                // Firebase에 데이터 저장
+                // 기존 모둠 데이터 삭제
+                await deleteExistingTeamData('formulas', team);
+                
+                // Firebase에 새 데이터 저장
                 await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDb, 'formulas'), {
                     team: team,
                     formula: formula,
                     timestamp: new Date()
                 });
+                
+                // 로컬 데이터도 즉시 업데이트
+                formulaData[team] = {
+                    formula: formula
+                };
+                displayFormulaResults();
                 
                 clearFormulaForm();
                 alert('제출이 완료되었습니다! 🎉');
@@ -2071,7 +2146,7 @@
             document.getElementById('visual-comparison').style.display = 'none';
         }
         
-        function calculateWithPi() {
+        async function calculateWithPi() {
             const selectedTeam = document.getElementById('team-select-3-2').value;
             if (!selectedTeam || !measurementData[selectedTeam] || !diameterData[selectedTeam]) {
                 alert('데이터가 없습니다!');
@@ -2092,7 +2167,7 @@
             const puzzleDiff = Math.abs(circumData.puzzle - puzzleCalculated);
             
             // 공유 데이터에 저장
-            sharedCalculationData[selectedTeam] = {
+            const calculationData = {
                 team: selectedTeam,
                 can: {
                     actual: circumData.can,
@@ -2114,6 +2189,26 @@
                 },
                 timestamp: new Date().toLocaleString()
             };
+            
+            // Firebase에 데이터 저장
+            try {
+                // 기존 모둠 데이터 삭제
+                await deleteExistingTeamData('calculations', selectedTeam);
+                
+                // Firebase에 새 데이터 저장
+                await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDb, 'calculations'), {
+                    ...calculationData,
+                    timestamp: new Date()
+                });
+                
+                // 로컬 데이터도 즉시 업데이트
+                sharedCalculationData[selectedTeam] = calculationData;
+                displaySharedCalculationResults();
+            } catch (error) {
+                console.error('데이터 저장 중 오류 발생:', error);
+                alert('데이터 저장 중 오류가 발생했습니다. 다시 시도해주세요.');
+                return;
+            }
             
             // 개별 결과 표시
             const resultsDiv = document.getElementById('calculation-results');
@@ -2182,8 +2277,12 @@
             
             let html = '';
             for (const [team, data] of Object.entries(sharedCalculationData)) {
-                const avgDifference = ((data.can.difference + data.tuna.difference + data.puzzle.difference) / 3).toFixed(2);
-                const isAccurate = avgDifference < 1;
+                // 안전한 평균 차이 계산
+                const canDiff = parseFloat(data.can.difference) || 0;
+                const tunaDiff = parseFloat(data.tuna.difference) || 0;
+                const puzzleDiff = parseFloat(data.puzzle.difference) || 0;
+                const avgDifference = ((canDiff + tunaDiff + puzzleDiff) / 3).toFixed(2);
+                const isAccurate = parseFloat(avgDifference) < 1;
                 
                 html += `
                     <div class="bg-white p-4 rounded-xl shadow-lg border-l-4 ${isAccurate ? 'border-green-500' : 'border-orange-500'} mb-3">
@@ -2292,7 +2391,10 @@
             }
             
             try {
-                // Firebase에 데이터 저장
+                // 기존 모둠 데이터 삭제
+                await deleteExistingTeamData('piNames', team);
+                
+                // Firebase에 새 데이터 저장
                 await window.firebaseAddDoc(window.firebaseCollection(window.firebaseDb, 'piNames'), {
                     team: team,
                     piName: piName,
