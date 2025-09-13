@@ -116,6 +116,20 @@
             transform: translateY(-1px) scale(1.02);
         }
         
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            background: #9ca3af;
+            box-shadow: none;
+        }
+        
+        .btn-primary:disabled:hover {
+            transform: none;
+            background: #9ca3af;
+            box-shadow: none;
+        }
+        
         .activity-icon {
             filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.1));
             transition: all 0.3s ease;
@@ -1075,7 +1089,7 @@
                         <button onclick="calculateFormula()" class="ml-4 bg-green-600 hover:bg-green-700 text-white px-6 py-4 rounded-lg font-bold">
                             🧮 계산하기
                         </button>
-                        <button onclick="startRolling3()" class="ml-2 btn-primary text-white px-6 py-4 rounded-lg font-bold">
+                        <button id="rolling-btn-3" onclick="startRolling3()" class="ml-2 btn-primary text-white px-6 py-4 rounded-lg font-bold" disabled>
                             🔄 굴려보기
                         </button>
                     </div>
@@ -1084,8 +1098,8 @@
                 <!-- 수식 계산 결과 -->
                 <div id="formula-calculation" class="mb-6 text-center hidden">
                     <div class="formula-display bg-gradient-to-r from-green-100 to-green-200">
-                        <div class="text-lg font-semibold mb-2">1. <span id="formula-diameter-label">수식에 따라 계산된 원주</span></div>
-                        <div id="calculated-result" class="text-3xl font-bold text-green-600"></div>
+                        <div class="text-2xl font-semibold mb-3">1. <span id="formula-diameter-label">수식에 따라 계산된 원주</span></div>
+                        <div id="calculated-result" class="text-4xl font-bold text-green-600"></div>
                     </div>
                 </div>
                 
@@ -1102,15 +1116,15 @@
                 
                 <div id="rolling-result-3" class="mt-6 text-center hidden">
                     <div class="formula-display bg-gradient-to-r from-blue-100 to-blue-200">
-                        <div class="text-lg font-semibold mb-2">2. <span id="rolling-diameter-label">원이 한 바퀴 굴러간 <span style="color: red; font-weight: bold;">실제</span>거리</span></div>
-                        <div id="actual-circumference" class="text-3xl font-bold text-blue-600"></div>
+                        <div class="text-2xl font-semibold mb-3">2. <span id="rolling-diameter-label">원이 한 바퀴 굴러간 <span style="color: red; font-weight: bold;">실제</span>거리</span></div>
+                        <div id="actual-circumference" class="text-4xl font-bold text-blue-600"></div>
                     </div>
                 </div>
                 
                 <!-- 비교 결과 -->
                 <div id="comparison-result" class="mt-6 text-center hidden">
                     <div class="formula-display bg-gradient-to-r from-purple-100 to-pink-200">
-                        <div id="comparison-text" class="text-xl font-bold text-purple-600"></div>
+                        <div id="comparison-text" class="text-2xl font-bold text-purple-600"></div>
                     </div>
                 </div>
             </div>
@@ -2266,15 +2280,28 @@
             const formulaDiameterLabel = document.getElementById('formula-diameter-label');
             
             formulaDiameterLabel.textContent = `수식에 따라 계산된 지름 ${diameter}cm의 원주`;
-            calculatedResult.textContent = `${diameter} × 3.14 = (약) ${calculatedCircumference.toFixed(2)} cm`;
+            calculatedResult.innerHTML = `<span style="font-size: 1.1em;">${diameter} × 3.14 = (약) <span style="color: #059669; font-size: 1.2em;">${calculatedCircumference.toFixed(2)} cm</span></span>`;
             calculationDiv.classList.remove('hidden');
             
             // 비교 결과 숨기기 (새로 계산할 때)
             document.getElementById('comparison-result').classList.add('hidden');
+            
+            // 굴려보기 버튼 활성화
+            const rollingBtn = document.getElementById('rolling-btn-3');
+            rollingBtn.disabled = false;
+            rollingBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            rollingBtn.style.background = '';
+            rollingBtn.style.boxShadow = '';
         }
         
         // 활동 3-1: 수식 확인 굴리기
         function startRolling3() {
+            const rollingBtn = document.getElementById('rolling-btn-3');
+            if (rollingBtn.disabled) {
+                alert('먼저 계산하기 버튼을 눌러주세요!');
+                return;
+            }
+            
             const diameter = parseFloat(document.getElementById('circle-diameter-3').value);
             if (!diameter || diameter < 1 || diameter > 1000) {
                 alert('1~1000 사이의 값을 입력해주세요!');
@@ -2403,7 +2430,7 @@
                     const firstTwoDecimals = decimalPart.substring(0, 2);
                     const remainingDecimals = decimalPart.substring(2);
                     
-                    actualCircumference.innerHTML = `<span style="color: orange; font-weight: bold;">${integerPart}.${firstTwoDecimals}</span>${remainingDecimals}... cm`;
+                    actualCircumference.innerHTML = `<span style="color: orange; font-weight: bold; font-size: 1.2em;">${integerPart}.${firstTwoDecimals}</span>${remainingDecimals}... cm`;
                     resultDiv.classList.remove('hidden');
                     
                     // 비교 결과 표시
@@ -2424,36 +2451,36 @@
             const comparisonText = document.getElementById('comparison-text');
             
             let resultHtml = `
-                <div class="mb-4">
-                    <div class="text-lg font-semibold mb-2">📊 비교 결과</div>
-                    <div class="grid grid-cols-2 gap-4 text-sm">
-                        <div class="bg-green-100 p-3 rounded-lg">
-                            <div class="font-semibold">우리가 계산한 값 (3.14 사용)</div>
-                            <div class="text-xl font-bold text-green-600">(약) ${calculatedCircumference.toFixed(2)} cm</div>
+                <div class="mb-6">
+                    <div class="text-2xl font-semibold mb-4">📊 비교 결과</div>
+                    <div class="grid grid-cols-2 gap-6 text-base">
+                        <div class="bg-green-100 p-4 rounded-lg">
+                            <div class="font-semibold text-lg">우리가 계산한 값 (3.14 사용)</div>
+                            <div class="text-2xl font-bold text-green-600">(약) ${calculatedCircumference.toFixed(2)} cm</div>
                         </div>
-                        <div class="bg-blue-100 p-3 rounded-lg">
-                            <div class="font-semibold">실제 굴러간 거리</div>
-                            <div class="text-xl font-bold text-blue-600">
+                        <div class="bg-blue-100 p-4 rounded-lg">
+                            <div class="font-semibold text-lg">실제 굴러간 거리</div>
+                            <div class="text-2xl font-bold text-blue-600">
                                 <span style="color: orange; font-weight: bold;">${actualCircumference.toFixed(2).substring(0, actualCircumference.toFixed(2).indexOf('.') + 3)}</span>${actualCircumference.toFixed(20).substring(actualCircumference.toFixed(2).length)}... cm
                             </div>
                         </div>
                     </div>
-                    <div class="text-center mt-2">
-                        <span class="text-red-600 font-semibold">차이: ${difference.toFixed(3)} cm</span>
+                    <div class="text-center mt-4">
+                        <span class="text-red-600 font-semibold text-xl">차이: ${difference.toFixed(3)} cm</span>
                     </div>
                 </div>
                 
-                <div class="bg-gradient-to-r from-yellow-100 to-orange-100 p-4 rounded-lg border-l-4 border-yellow-500">
-                    <div class="text-lg font-bold mb-2">🔍 수학의 신비로운 발견!</div>
-                    <div class="text-sm space-y-2">
-                        <p><strong>실제 규칙은 3.14보다 훨씬 복잡해요!</strong></p>
-                        <p class="pi-digits text-lg font-bold">규칙 = 3.14159265358979323846264338327950288...</p>
-                        <p>이 숫자는 <strong>무한히 계속돼요!</strong> 🤯</p>
-                        <p>그래서 우리는 보통 <strong>3.14</strong>나 <strong>3.14159</strong> 정도로 근사값을 사용해요.</p>
-                        <div class="mt-2 p-2 bg-gradient-to-r from-pink-100 to-purple-100 rounded border">
-                            <div class="font-semibold text-indigo-600">🎓 수학자들의 도전:</div>
-                            <div class="text-xs">수천 년 동안 수학자들이 이 규칙의 정확한 값을 찾으려 노력했어요!</div>
-                            <div class="text-xs">현재는 컴퓨터로 수조 자리까지 계산할 수 있답니다!</div>
+                <div class="bg-gradient-to-r from-yellow-100 to-orange-100 p-6 rounded-lg border-l-4 border-yellow-500">
+                    <div class="text-3xl font-bold mb-4">🔍 수학의 신비로운 발견!</div>
+                    <div class="text-lg space-y-3">
+                        <p class="text-xl"><strong>실제 규칙은 3.14보다 훨씬 복잡해요!</strong></p>
+                        <p class="pi-digits text-2xl font-bold">규칙 = 3.14159265358979323846264338327950288...</p>
+                        <p class="text-xl">이 숫자는 <strong>무한히 계속돼요!</strong> 🤯</p>
+                        <p class="text-xl">그래서 우리는 보통 <strong>3.14</strong>나 <strong>3.14159</strong> 정도로 근사값을 사용해요.</p>
+                        <div class="mt-4 p-4 bg-gradient-to-r from-pink-100 to-purple-100 rounded border">
+                            <div class="font-semibold text-indigo-600 text-xl">🎓 수학자들의 도전:</div>
+                            <div class="text-base mt-2">수천 년 동안 수학자들이 이 규칙의 정확한 값을 찾으려 노력했어요!</div>
+                            <div class="text-base">현재는 컴퓨터로 수조 자리까지 계산할 수 있답니다!</div>
                         </div>
                     </div>
                 </div>
@@ -3269,6 +3296,13 @@
             
             // 지름 측정 시뮬레이터 초기화
             initializeDiameterSimulator();
+            
+            // 굴려보기 버튼 초기화 (비활성화 상태로 시작)
+            const rollingBtn = document.getElementById('rolling-btn-3');
+            if (rollingBtn) {
+                rollingBtn.disabled = true;
+                rollingBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
         });
     </script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97df4b1566e2aa41',t:'MTc1NzY3ODkzOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
