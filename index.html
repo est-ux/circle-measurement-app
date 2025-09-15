@@ -1539,6 +1539,15 @@
                     input.value = parts[0] + '.' + parts[1].substring(0, places);
                 }
             }
+            
+            // 입력값이 변경될 때마다 굴려보기 버튼 비활성화
+            if (input.id === 'circle-diameter-3') {
+                const rollingBtn = document.getElementById('rolling-btn-3');
+                if (rollingBtn) {
+                    rollingBtn.disabled = true;
+                    rollingBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                }
+            }
         }
         
         // 화면 전환 함수들
@@ -2286,6 +2295,9 @@
             // 비교 결과 숨기기 (새로 계산할 때)
             document.getElementById('comparison-result').classList.add('hidden');
             
+            // 굴려보기 결과 숨기기 (새로 계산할 때)
+            document.getElementById('rolling-result-3').classList.add('hidden');
+            
             // 굴려보기 버튼 활성화
             const rollingBtn = document.getElementById('rolling-btn-3');
             rollingBtn.disabled = false;
@@ -2435,6 +2447,11 @@
                     
                     // 비교 결과 표시
                     showComparison(diameter);
+                    
+                    // 굴려보기 버튼 비활성화 (다음 턴을 위해)
+                    const rollingBtn = document.getElementById('rolling-btn-3');
+                    rollingBtn.disabled = true;
+                    rollingBtn.classList.add('opacity-50', 'cursor-not-allowed');
                 }
             }
             
