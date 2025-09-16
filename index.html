@@ -980,6 +980,44 @@
                         <div id="circumference-result" class="text-2xl font-bold text-blue-600"></div>
                     </div>
                 </div>
+                
+                <!-- 누적 결과 표시 영역 -->
+                <div id="accumulated-results" class="mt-6 hidden">
+                    <h3 class="text-xl font-bold text-center mb-4 text-gray-800">📊 지금까지의 결과들</h3>
+                    <div class="grid grid-cols-2 gap-6">
+                        <!-- 왼쪽: 결과 표 -->
+                        <div class="bg-gray-50 p-4 rounded-lg border-2 border-gray-200 max-h-80 overflow-y-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="bg-blue-100 border-b-2 border-blue-300">
+                                        <th class="text-center py-2 px-2 font-bold text-base">순</th>
+                                        <th class="text-center py-2 px-2 font-bold text-base">지름</th>
+                                        <th class="text-center py-2 px-2 font-bold text-base">원주</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="results-table-body">
+                                    <!-- 결과들이 여기에 표시됩니다 -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- 오른쪽: 관계 힌트 -->
+                        <div class="bg-gradient-to-br from-yellow-50 to-orange-50 p-6 rounded-lg border-2 border-yellow-200">
+                            <h4 class="text-xl font-bold text-center mb-4 text-orange-800">🔍 규칙을 찾아보세요!</h4>
+                            <div class="space-y-4">
+                                <div class="bg-white p-4 rounded-lg border border-orange-200">
+                                    <div class="text-base font-semibold text-gray-700 mb-3">💭 관찰해보기</div>
+                                    <div class="space-y-2 text-base">
+                                        <div>1. 지름이 커지면 원주도 커지나요?</div>
+                                        <div>2. 지름이 2배 또는 3배가 되면, 원주도 2배 또는 3배가 되나요?</div>
+                                        <div class="font-bold text-blue-600 text-lg">3. 지름에 어떤 수를 곱하면 원주가 되나요?</div>
+                                        <div class="text-sm text-gray-600 italic ml-6">(힌트: 지름을 1로 두고 굴려보세요)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <!-- 활동 2-4: 수식 기록하기 -->
@@ -1009,26 +1047,13 @@
                             <div>
                                 <label class="block text-lg font-semibold mb-3">🧮 원주가 가진 규칙</label>
                                 <div class="flex items-center gap-3 p-4 border-2 border-gray-300 rounded-lg bg-white">
-                                    <select id="formula-first" class="p-3 border border-gray-300 rounded text-lg">
-                                        <option value="">선택</option>
-                                        <option value="지름">지름</option>
-                                        <option value="원주">원주</option>
-                                    </select>
-                                    <select id="formula-operator" class="p-3 border border-gray-300 rounded text-lg">
-                                        <option value="">연산</option>
-                                        <option value="×">×</option>
-                                        <option value="÷">÷</option>
-                                        <option value="+">+</option>
-                                        <option value="-">-</option>
-                                    </select>
+                                    <div class="p-3 bg-gray-100 border border-gray-300 rounded text-lg font-semibold text-gray-700">지름</div>
+                                    <div class="p-3 bg-gray-100 border border-gray-300 rounded text-lg font-semibold text-gray-700">×</div>
                                     <input type="number" id="formula-number" step="0.01" placeholder="0.00" class="p-3 border border-gray-300 rounded w-24 text-lg" min="0" max="999.99" oninput="limitDecimalPlaces(this, 2)">
                                     <span class="text-xl font-bold">=</span>
-                                    <select id="formula-result" class="p-3 border border-gray-300 rounded text-lg">
-                                        <option value="">선택</option>
-                                        <option value="지름">지름</option>
-                                        <option value="원주">원주</option>
-                                    </select>
+                                    <div class="p-3 bg-gray-100 border border-gray-300 rounded text-lg font-semibold text-gray-700">원주</div>
                                 </div>
+                                <p class="text-sm text-gray-600 mt-2">💡 지름에 곱할 수를 소수 둘째자리까지 입력해보세요!</p>
                             </div>
                             
                             <button onclick="submitFormula()" class="w-full btn-primary text-white py-5 rounded-lg font-bold text-xl">
@@ -2000,6 +2025,9 @@
             document.getElementById('puzzle-diameter').value = '';
         }
         
+        // 누적 결과를 저장할 배열
+        let accumulatedResults = [];
+        
         // 활동 2-3: 굴리기 애니메이션
         function startRolling() {
             const diameter = parseInt(document.getElementById('circle-diameter').value);
@@ -2012,6 +2040,7 @@
             const container = document.getElementById('rolling-area');
             const resultDiv = document.getElementById('rolling-result');
             const circumferenceResult = document.getElementById('circumference-result');
+            const accumulatedDiv = document.getElementById('accumulated-results');
             
             // 기존 애니메이션 정리
             container.innerHTML = '';
@@ -2119,17 +2148,62 @@
                 } else {
                     // 애니메이션 완료
                     const approximateCircumference = diameter * 3.14;
-                    circumferenceResult.innerHTML = `
-                        <div class="text-lg">지름 ${diameter}cm인 원이 한 바퀴 굴러간 거리</div>
-                        <div class="text-xl font-bold mt-2">=</div>
-                        <div class="text-lg">지름 ${diameter}cm인 원의 원주</div>
-                        <div class="text-3xl font-bold text-red-600 mt-3">약 ${approximateCircumference.toFixed(2)} cm</div>
-                    `;
+                    circumferenceResult.innerHTML = `지름 ${diameter}인 원의 원주 = ${approximateCircumference.toFixed(2)}`;
                     resultDiv.classList.remove('hidden');
+                    
+                    // 결과를 누적 배열에 추가
+                    addToAccumulatedResults(diameter, approximateCircumference.toFixed(2));
                 }
             }
             
             animate();
+        }
+        
+        // 누적 결과에 새 결과 추가
+        function addToAccumulatedResults(diameter, circumference) {
+            // 새 결과 추가
+            accumulatedResults.push({
+                diameter: diameter,
+                circumference: circumference
+            });
+            
+            // 10개를 초과하면 가장 오래된 것 제거
+            if (accumulatedResults.length > 10) {
+                accumulatedResults.shift();
+            }
+            
+            // 결과 표시 업데이트
+            updateAccumulatedResultsDisplay();
+        }
+        
+        // 누적 결과 표시 업데이트
+        function updateAccumulatedResultsDisplay() {
+            const resultsTableBody = document.getElementById('results-table-body');
+            const accumulatedDiv = document.getElementById('accumulated-results');
+            const calculationHint = document.getElementById('calculation-hint');
+            
+            if (accumulatedResults.length === 0) {
+                accumulatedDiv.classList.add('hidden');
+                return;
+            }
+            
+            accumulatedDiv.classList.remove('hidden');
+            
+            // 표 업데이트
+            let html = '';
+            accumulatedResults.forEach((result, index) => {
+                html += `
+                    <tr class="border-b border-gray-200 hover:bg-blue-50">
+                        <td class="text-center py-2 px-2 font-bold text-base">${index + 1}</td>
+                        <td class="text-center py-2 px-2 font-bold text-base">${result.diameter}</td>
+                        <td class="text-center py-2 px-2 font-bold text-base">${result.circumference}</td>
+                    </tr>
+                `;
+            });
+            
+            resultsTableBody.innerHTML = html;
+            
+            // 오른쪽 힌트 영역 업데이트 (현재는 정적이므로 업데이트 불필요)
         }
         
         function zoomIn() {
@@ -2162,17 +2236,14 @@
         
         async function submitFormula() {
             const team = document.getElementById('team-select-3').value;
-            const first = document.getElementById('formula-first').value;
-            const operator = document.getElementById('formula-operator').value;
             const number = document.getElementById('formula-number').value;
-            const result = document.getElementById('formula-result').value;
             
-            if (!team || !first || !operator || !number || !result) {
-                alert('모든 항목을 입력해주세요!');
+            if (!team || !number) {
+                alert('모둠을 선택하고 숫자를 입력해주세요!');
                 return;
             }
             
-            const formula = `${first} ${operator} ${number} = ${result}`;
+            const formula = `지름 × ${number} = 원주`;
             
             try {
                 console.log('수식 제출 시작:', { team, formula }); // 디버깅용
@@ -2269,10 +2340,7 @@
         
         function clearFormulaForm() {
             document.getElementById('team-select-3').value = '';
-            document.getElementById('formula-first').value = '';
-            document.getElementById('formula-operator').value = '';
             document.getElementById('formula-number').value = '';
-            document.getElementById('formula-result').value = '';
         }
         
         // 활동 3-1: 수식 계산
@@ -2642,34 +2710,34 @@
             resultsDiv.innerHTML = `
                 <div class="space-y-4">
                     <div class="bg-blue-50 p-4 rounded-lg">
-                        <h4 class="font-semibold text-center mb-2">🥤 음료수 캔</h4>
-                        <div class="text-sm space-y-1">
+                        <h4 class="font-semibold text-center mb-2 text-lg">🥤 음료수 캔</h4>
+                        <div class="text-lg space-y-1">
                             <div>실제 측정한 원주: <span class="font-bold text-blue-600">${circumData.can}cm</span></div>
                             <div>규칙으로 계산: ${diamData.canDiam} × 3.14 = <span class="font-bold text-green-600">${canCalculated.toFixed(2)}cm</span></div>
                             <div>차이: <span class="font-bold text-red-600">${canDiff.toFixed(2)}cm</span> 
-                                <span class="text-xs ${canDiff < 1 ? 'text-green-600' : 'text-orange-600'}">${canDiff < 1 ? '(매우 정확!)' : '(측정 오차 있음)'}</span>
+                                <span class="text-sm ${canDiff < 1 ? 'text-green-600' : 'text-orange-600'}">${canDiff < 1 ? '(매우 정확!)' : '(측정 오차 있음)'}</span>
                             </div>
                         </div>
                     </div>
                     
                     <div class="bg-green-50 p-4 rounded-lg">
-                        <h4 class="font-semibold text-center mb-2">🥫 참치 통조림</h4>
-                        <div class="text-sm space-y-1">
+                        <h4 class="font-semibold text-center mb-2 text-lg">🥫 참치 통조림</h4>
+                        <div class="text-lg space-y-1">
                             <div>실제 측정한 원주: <span class="font-bold text-blue-600">${circumData.tuna}cm</span></div>
                             <div>규칙으로 계산: ${diamData.tunaDiam} × 3.14 = <span class="font-bold text-green-600">${tunaCalculated.toFixed(2)}cm</span></div>
                             <div>차이: <span class="font-bold text-red-600">${tunaDiff.toFixed(2)}cm</span>
-                                <span class="text-xs ${tunaDiff < 1 ? 'text-green-600' : 'text-orange-600'}">${tunaDiff < 1 ? '(매우 정확!)' : '(측정 오차 있음)'}</span>
+                                <span class="text-sm ${tunaDiff < 1 ? 'text-green-600' : 'text-orange-600'}">${tunaDiff < 1 ? '(매우 정확!)' : '(측정 오차 있음)'}</span>
                             </div>
                         </div>
                     </div>
                     
                     <div class="bg-yellow-50 p-4 rounded-lg">
-                        <h4 class="font-semibold text-center mb-2">🧩 퍼즐통</h4>
-                        <div class="text-sm space-y-1">
+                        <h4 class="font-semibold text-center mb-2 text-lg">🧩 퍼즐통</h4>
+                        <div class="text-lg space-y-1">
                             <div>실제 측정한 원주: <span class="font-bold text-blue-600">${circumData.puzzle}cm</span></div>
                             <div>규칙으로 계산: ${diamData.puzzleDiam} × 3.14 = <span class="font-bold text-green-600">${puzzleCalculated.toFixed(2)}cm</span></div>
                             <div>차이: <span class="font-bold text-red-600">${puzzleDiff.toFixed(2)}cm</span>
-                                <span class="text-xs ${puzzleDiff < 1 ? 'text-green-600' : 'text-orange-600'}">${puzzleDiff < 1 ? '(매우 정확!)' : '(측정 오차 있음)'}</span>
+                                <span class="text-sm ${puzzleDiff < 1 ? 'text-green-600' : 'text-orange-600'}">${puzzleDiff < 1 ? '(매우 정확!)' : '(측정 오차 있음)'}</span>
                             </div>
                         </div>
                     </div>
@@ -2718,8 +2786,8 @@
                         <div class="grid grid-cols-1 gap-2 mb-3">
                             <div class="bg-blue-50 p-3 rounded-lg border-l-4 border-blue-400">
                                 <div class="flex justify-between items-center">
-                                    <span class="font-semibold text-sm text-blue-700">🥤 음료수 캔</span>
-                                    <div class="text-xs">
+                                    <span class="font-semibold text-lg text-blue-700">🥤 음료수 캔</span>
+                                    <div class="text-base">
                                         <span class="text-blue-600">실제: ${data.can.actual}cm</span>
                                         <span class="ml-2 text-blue-600">계산: ${data.can.calculated.toFixed(2)}cm</span>
                                         <span class="ml-2 font-bold ${data.can.difference < 1 ? 'text-green-600' : 'text-red-600'}">차이: ${data.can.difference.toFixed(2)}cm</span>
@@ -2728,8 +2796,8 @@
                             </div>
                             <div class="bg-green-50 p-3 rounded-lg border-l-4 border-green-400">
                                 <div class="flex justify-between items-center">
-                                    <span class="font-semibold text-sm text-green-700">🥫 참치 통조림</span>
-                                    <div class="text-xs">
+                                    <span class="font-semibold text-lg text-green-700">🥫 참치 통조림</span>
+                                    <div class="text-base">
                                         <span class="text-green-600">실제: ${data.tuna.actual}cm</span>
                                         <span class="ml-2 text-green-600">계산: ${data.tuna.calculated.toFixed(2)}cm</span>
                                         <span class="ml-2 font-bold ${data.tuna.difference < 1 ? 'text-green-600' : 'text-red-600'}">차이: ${data.tuna.difference.toFixed(2)}cm</span>
@@ -2738,8 +2806,8 @@
                             </div>
                             <div class="bg-yellow-50 p-3 rounded-lg border-l-4 border-yellow-400">
                                 <div class="flex justify-between items-center">
-                                    <span class="font-semibold text-sm text-yellow-700">🧩 퍼즐통</span>
-                                    <div class="text-xs">
+                                    <span class="font-semibold text-lg text-yellow-700">🧩 퍼즐통</span>
+                                    <div class="text-base">
                                         <span class="text-yellow-600">실제: ${data.puzzle.actual}cm</span>
                                         <span class="ml-2 text-yellow-600">계산: ${data.puzzle.calculated.toFixed(2)}cm</span>
                                         <span class="ml-2 font-bold ${data.puzzle.difference < 1 ? 'text-green-600' : 'text-red-600'}">차이: ${data.puzzle.difference.toFixed(2)}cm</span>
