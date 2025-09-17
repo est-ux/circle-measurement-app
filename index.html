@@ -683,7 +683,7 @@
                                 🗑️ 기존 자료 삭제
                             </button>
                         </div>
-                        <div id="methods-results" class="space-y-4 max-h-[500px] overflow-y-auto text-base">
+                        <div id="methods-results" class="space-y-4 text-base">
                             <p class="text-center text-gray-500 text-lg">아직 제출된 결과가 없습니다.</p>
                         </div>
                     </div>
@@ -1159,7 +1159,7 @@
                 <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">🧮 규칙 적용하여 물건의 원주 계산하기</h2>
                 
                 <div class="grid md:grid-cols-2 gap-12">
-                    <div class="measurement-card">
+                    <div class="measurement-card" style="min-height: 600px;">
                         <h3 class="text-2xl font-bold mb-6 text-center">📊 모둠 데이터 확인하기</h3>
                         <div class="space-y-5">
                             <div class="flex gap-3">
@@ -1198,14 +1198,14 @@
                         </div>
                     </div>
                     
-                    <div class="measurement-card">
+                    <div class="measurement-card" style="min-height: 600px;">
                         <div class="flex justify-between items-center mb-6">
                             <h3 class="text-2xl font-bold text-center flex-1">👥 모둠 별 검토 결과</h3>
                             <button onclick="clearAllCalculations()" class="bg-red-500 hover:bg-red-600 text-white px-8 py-4 rounded-lg text-lg font-bold transition-colors shadow-lg border-2 border-red-600">
                                 🗑️ 기존 자료 삭제
                             </button>
                         </div>
-                        <div id="shared-calculation-results" class="space-y-4 max-h-[500px] overflow-y-auto text-base">
+                        <div id="shared-calculation-results" class="space-y-4 max-h-[450px] overflow-y-auto text-base">
                             <p class="text-center text-gray-500 text-lg">아직 계산된 결과가 없습니다.</p>
                         </div>
                     </div>
@@ -1428,6 +1428,19 @@
             });
         }
         
+        // 비밀번호 확인 함수
+        function confirmPassword() {
+            const password = prompt('기존 자료를 삭제하려면 비밀번호를 입력하세요:');
+            if (password === '1234') {
+                return true;
+            } else if (password === null) {
+                return false; // 취소 버튼을 눌렀을 때
+            } else {
+                alert('비밀번호가 틀렸습니다. 다시 시도해주세요.');
+                return false;
+            }
+        }
+
         // 기존 모둠 데이터 삭제 헬퍼 함수
         async function deleteExistingTeamData(collection, team) {
             try {
@@ -1443,6 +1456,9 @@
         
         // Firebase 데이터 삭제 함수들
         async function clearAllMethods() {
+            if (!confirmPassword()) {
+                return;
+            }
             if (!confirm('모든 측정 방법 데이터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
                 return;
             }
@@ -1462,6 +1478,9 @@
         }
         
         async function clearAllMeasurements() {
+            if (!confirmPassword()) {
+                return;
+            }
             if (!confirm('모든 원주 측정 데이터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
                 return;
             }
@@ -1481,6 +1500,9 @@
         }
         
         async function clearAllDiameters() {
+            if (!confirmPassword()) {
+                return;
+            }
             if (!confirm('모든 지름 측정 데이터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
                 return;
             }
@@ -1500,6 +1522,9 @@
         }
         
         async function clearAllFormulas() {
+            if (!confirmPassword()) {
+                return;
+            }
             if (!confirm('모든 수식 데이터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
                 return;
             }
@@ -1519,6 +1544,9 @@
         }
         
         async function clearAllPiNames() {
+            if (!confirmPassword()) {
+                return;
+            }
             if (!confirm('모든 파이 이름 데이터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
                 return;
             }
@@ -1538,6 +1566,9 @@
         }
         
         async function clearAllCalculations() {
+            if (!confirmPassword()) {
+                return;
+            }
             if (!confirm('모든 계산 데이터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
                 return;
             }
@@ -2610,21 +2641,21 @@
             const diamData = diameterData[selectedTeam];
             
             let html = `
-                <div class="grid grid-cols-3 gap-3">
-                    <div class="bg-blue-50 p-3 rounded-lg text-center">
-                        <div class="font-semibold text-sm">🥤 음료수 캔</div>
-                        <div class="text-xs mt-1">실제 측정한 원주: ${circumData.can}cm</div>
-                        <div class="text-xs">실제 측정한 지름: ${diamData.canDiam}cm</div>
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="bg-blue-50 p-4 rounded-lg text-center">
+                        <div class="font-semibold text-lg">🥤 음료수 캔</div>
+                        <div class="text-base mt-2">실제 측정한 원주: ${circumData.can}cm</div>
+                        <div class="text-base">실제 측정한 지름: ${diamData.canDiam}cm</div>
                     </div>
-                    <div class="bg-green-50 p-3 rounded-lg text-center">
-                        <div class="font-semibold text-sm">🥫 참치 통조림</div>
-                        <div class="text-xs mt-1">실제 측정한 원주: ${circumData.tuna}cm</div>
-                        <div class="text-xs">실제 측정한 지름: ${diamData.tunaDiam}cm</div>
+                    <div class="bg-green-50 p-4 rounded-lg text-center">
+                        <div class="font-semibold text-lg">🥫 참치 통조림</div>
+                        <div class="text-base mt-2">실제 측정한 원주: ${circumData.tuna}cm</div>
+                        <div class="text-base">실제 측정한 지름: ${diamData.tunaDiam}cm</div>
                     </div>
-                    <div class="bg-yellow-50 p-3 rounded-lg text-center">
-                        <div class="font-semibold text-sm">🧩 퍼즐통</div>
-                        <div class="text-xs mt-1">실제 측정한 원주: ${circumData.puzzle}cm</div>
-                        <div class="text-xs">실제 측정한 지름: ${diamData.puzzleDiam}cm</div>
+                    <div class="bg-yellow-50 p-4 rounded-lg text-center">
+                        <div class="font-semibold text-lg">🧩 퍼즐통</div>
+                        <div class="text-base mt-2">실제 측정한 원주: ${circumData.puzzle}cm</div>
+                        <div class="text-base">실제 측정한 지름: ${diamData.puzzleDiam}cm</div>
                     </div>
                 </div>
             `;
@@ -2708,36 +2739,79 @@
             
             calcTeamName.textContent = selectedTeam;
             resultsDiv.innerHTML = `
-                <div class="space-y-4">
-                    <div class="bg-blue-50 p-4 rounded-lg">
-                        <h4 class="font-semibold text-center mb-2 text-lg">🥤 음료수 캔</h4>
-                        <div class="text-lg space-y-1">
-                            <div>실제 측정한 원주: <span class="font-bold text-blue-600">${circumData.can}cm</span></div>
-                            <div>규칙으로 계산: ${diamData.canDiam} × 3.14 = <span class="font-bold text-green-600">${canCalculated.toFixed(2)}cm</span></div>
-                            <div>차이: <span class="font-bold text-red-600">${canDiff.toFixed(2)}cm</span> 
-                                <span class="text-sm ${canDiff < 1 ? 'text-green-600' : 'text-orange-600'}">${canDiff < 1 ? '(매우 정확!)' : '(측정 오차 있음)'}</span>
-                            </div>
+                <div class="grid grid-cols-4 gap-4">
+                    <!-- 왼쪽 영역: 항목 이름들 -->
+                    <div class="space-y-2">
+                        <div class="bg-blue-50 p-3 rounded-lg border-l-4 border-blue-400 h-24 flex items-center">
+                            <div class="font-semibold text-lg text-blue-700">🥤 음료수 캔</div>
+                        </div>
+                        <div class="bg-green-50 p-3 rounded-lg border-l-4 border-green-400 h-24 flex items-center">
+                            <div class="font-semibold text-lg text-green-700">🥫 참치 통조림</div>
+                        </div>
+                        <div class="bg-yellow-50 p-3 rounded-lg border-l-4 border-yellow-400 h-24 flex items-center">
+                            <div class="font-semibold text-lg text-yellow-700">🧩 퍼즐통</div>
                         </div>
                     </div>
                     
-                    <div class="bg-green-50 p-4 rounded-lg">
-                        <h4 class="font-semibold text-center mb-2 text-lg">🥫 참치 통조림</h4>
-                        <div class="text-lg space-y-1">
-                            <div>실제 측정한 원주: <span class="font-bold text-blue-600">${circumData.tuna}cm</span></div>
-                            <div>규칙으로 계산: ${diamData.tunaDiam} × 3.14 = <span class="font-bold text-green-600">${tunaCalculated.toFixed(2)}cm</span></div>
-                            <div>차이: <span class="font-bold text-red-600">${tunaDiff.toFixed(2)}cm</span>
-                                <span class="text-sm ${tunaDiff < 1 ? 'text-green-600' : 'text-orange-600'}">${tunaDiff < 1 ? '(매우 정확!)' : '(측정 오차 있음)'}</span>
+                    <!-- 오른쪽 영역: 계산 결과들 -->
+                    <div class="col-span-3 space-y-2">
+                        <!-- 음료수 캔 결과 -->
+                        <div class="bg-blue-50 p-3 rounded-lg h-24 flex flex-col justify-center">
+                            <div class="text-lg space-y-1">
+                                <div class="flex items-center justify-center">
+                                    <span class="w-96 text-right mr-3">줄자로 측정한 원주</span>
+                                    <span class="font-bold text-blue-600">= ${circumData.can}cm</span>
+                                </div>
+                                <div class="flex items-center justify-center">
+                                    <span class="w-96 text-right mr-3 whitespace-nowrap">규칙으로 계산한 원주{측정한지름(${diamData.canDiam})×3.14}</span>
+                                    <span class="font-bold text-green-600">= ${canCalculated.toFixed(2)}cm</span>
+                                </div>
+                                <div class="flex items-center justify-center">
+                                    <span class="w-96 text-right mr-3">차이</span>
+                                    <span class="font-bold text-red-600">= ${canDiff.toFixed(2)}cm 
+                                        <span class="text-sm ${canDiff < 1 ? 'text-green-600' : 'text-orange-600'}">${canDiff < 1 ? '(매우 정확!)' : '(측정 오차 있음)'}</span>
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <div class="bg-yellow-50 p-4 rounded-lg">
-                        <h4 class="font-semibold text-center mb-2 text-lg">🧩 퍼즐통</h4>
-                        <div class="text-lg space-y-1">
-                            <div>실제 측정한 원주: <span class="font-bold text-blue-600">${circumData.puzzle}cm</span></div>
-                            <div>규칙으로 계산: ${diamData.puzzleDiam} × 3.14 = <span class="font-bold text-green-600">${puzzleCalculated.toFixed(2)}cm</span></div>
-                            <div>차이: <span class="font-bold text-red-600">${puzzleDiff.toFixed(2)}cm</span>
-                                <span class="text-sm ${puzzleDiff < 1 ? 'text-green-600' : 'text-orange-600'}">${puzzleDiff < 1 ? '(매우 정확!)' : '(측정 오차 있음)'}</span>
+                        
+                        <!-- 참치 통조림 결과 -->
+                        <div class="bg-green-50 p-3 rounded-lg h-24 flex flex-col justify-center">
+                            <div class="text-lg space-y-1">
+                                <div class="flex items-center justify-center">
+                                    <span class="w-96 text-right mr-3">줄자로 측정한 원주</span>
+                                    <span class="font-bold text-blue-600">= ${circumData.tuna}cm</span>
+                                </div>
+                                <div class="flex items-center justify-center">
+                                    <span class="w-96 text-right mr-3 whitespace-nowrap">규칙으로 계산한 원주{측정한지름(${diamData.tunaDiam})×3.14}</span>
+                                    <span class="font-bold text-green-600">= ${tunaCalculated.toFixed(2)}cm</span>
+                                </div>
+                                <div class="flex items-center justify-center">
+                                    <span class="w-96 text-right mr-3">차이</span>
+                                    <span class="font-bold text-red-600">= ${tunaDiff.toFixed(2)}cm
+                                        <span class="text-sm ${tunaDiff < 1 ? 'text-green-600' : 'text-orange-600'}">${tunaDiff < 1 ? '(매우 정확!)' : '(측정 오차 있음)'}</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 퍼즐통 결과 -->
+                        <div class="bg-yellow-50 p-3 rounded-lg h-24 flex flex-col justify-center">
+                            <div class="text-lg space-y-1">
+                                <div class="flex items-center justify-center">
+                                    <span class="w-96 text-right mr-3">줄자로 측정한 원주</span>
+                                    <span class="font-bold text-blue-600">= ${circumData.puzzle}cm</span>
+                                </div>
+                                <div class="flex items-center justify-center">
+                                    <span class="w-96 text-right mr-3 whitespace-nowrap">규칙으로 계산한 원주{측정한지름(${diamData.puzzleDiam})×3.14}</span>
+                                    <span class="font-bold text-green-600">= ${puzzleCalculated.toFixed(2)}cm</span>
+                                </div>
+                                <div class="flex items-center justify-center">
+                                    <span class="w-96 text-right mr-3">차이</span>
+                                    <span class="font-bold text-red-600">= ${puzzleDiff.toFixed(2)}cm
+                                        <span class="text-sm ${puzzleDiff < 1 ? 'text-green-600' : 'text-orange-600'}">${puzzleDiff < 1 ? '(매우 정확!)' : '(측정 오차 있음)'}</span>
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -2783,34 +2857,73 @@
                             <div class="text-xs text-gray-500">${data.timestamp}</div>
                         </div>
                         
-                        <div class="grid grid-cols-1 gap-2 mb-3">
-                            <div class="bg-blue-50 p-3 rounded-lg border-l-4 border-blue-400">
-                                <div class="flex justify-between items-center">
-                                    <span class="font-semibold text-lg text-blue-700">🥤 음료수 캔</span>
-                                    <div class="text-base">
-                                        <span class="text-blue-600">실제: ${data.can.actual}cm</span>
-                                        <span class="ml-2 text-blue-600">계산: ${data.can.calculated.toFixed(2)}cm</span>
-                                        <span class="ml-2 font-bold ${data.can.difference < 1 ? 'text-green-600' : 'text-red-600'}">차이: ${data.can.difference.toFixed(2)}cm</span>
-                                    </div>
+                        <div class="grid grid-cols-4 gap-4 mb-3">
+                            <!-- 왼쪽 영역: 항목 이름들 -->
+                            <div class="space-y-2">
+                                <div class="bg-blue-50 p-3 rounded-lg border-l-4 border-blue-400 h-24 flex items-center">
+                                    <div class="font-semibold text-lg text-blue-700">🥤 음료수 캔</div>
+                                </div>
+                                <div class="bg-green-50 p-3 rounded-lg border-l-4 border-green-400 h-24 flex items-center">
+                                    <div class="font-semibold text-lg text-green-700">🥫 참치 통조림</div>
+                                </div>
+                                <div class="bg-yellow-50 p-3 rounded-lg border-l-4 border-yellow-400 h-24 flex items-center">
+                                    <div class="font-semibold text-lg text-yellow-700">🧩 퍼즐통</div>
                                 </div>
                             </div>
-                            <div class="bg-green-50 p-3 rounded-lg border-l-4 border-green-400">
-                                <div class="flex justify-between items-center">
-                                    <span class="font-semibold text-lg text-green-700">🥫 참치 통조림</span>
-                                    <div class="text-base">
-                                        <span class="text-green-600">실제: ${data.tuna.actual}cm</span>
-                                        <span class="ml-2 text-green-600">계산: ${data.tuna.calculated.toFixed(2)}cm</span>
-                                        <span class="ml-2 font-bold ${data.tuna.difference < 1 ? 'text-green-600' : 'text-red-600'}">차이: ${data.tuna.difference.toFixed(2)}cm</span>
+                            
+                            <!-- 오른쪽 영역: 계산 결과들 -->
+                            <div class="col-span-3 space-y-2">
+                                <!-- 음료수 캔 결과 -->
+                                <div class="bg-blue-50 p-3 rounded-lg h-24 flex flex-col justify-center">
+                                    <div class="text-base space-y-1">
+                                        <div class="flex justify-end items-center">
+                                            <span class="text-blue-600 mr-3">줄자로 측정한 원주</span>
+                                            <span class="font-bold text-blue-800">= ${data.can.actual}cm</span>
+                                        </div>
+                                        <div class="flex justify-end items-center">
+                                            <span class="text-blue-600 mr-3">규칙으로 계산한 원주{측정한지름(${data.can.diameter})×3.14}</span>
+                                            <span class="font-bold text-blue-800">= ${data.can.calculated.toFixed(2)}cm</span>
+                                        </div>
+                                        <div class="flex justify-end items-center">
+                                            <span class="text-blue-600 mr-3">차이</span>
+                                            <span class="font-bold ${data.can.difference < 1 ? 'text-green-600' : 'text-red-600'}">= ${data.can.difference.toFixed(2)}cm</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="bg-yellow-50 p-3 rounded-lg border-l-4 border-yellow-400">
-                                <div class="flex justify-between items-center">
-                                    <span class="font-semibold text-lg text-yellow-700">🧩 퍼즐통</span>
-                                    <div class="text-base">
-                                        <span class="text-yellow-600">실제: ${data.puzzle.actual}cm</span>
-                                        <span class="ml-2 text-yellow-600">계산: ${data.puzzle.calculated.toFixed(2)}cm</span>
-                                        <span class="ml-2 font-bold ${data.puzzle.difference < 1 ? 'text-green-600' : 'text-red-600'}">차이: ${data.puzzle.difference.toFixed(2)}cm</span>
+                                
+                                <!-- 참치 통조림 결과 -->
+                                <div class="bg-green-50 p-3 rounded-lg h-24 flex flex-col justify-center">
+                                    <div class="text-base space-y-1">
+                                        <div class="flex justify-end items-center">
+                                            <span class="text-green-600 mr-3">줄자로 측정한 원주</span>
+                                            <span class="font-bold text-green-800">= ${data.tuna.actual}cm</span>
+                                        </div>
+                                        <div class="flex justify-end items-center">
+                                            <span class="text-green-600 mr-3">규칙으로 계산한 원주{측정한지름(${data.tuna.diameter})×3.14}</span>
+                                            <span class="font-bold text-green-800">= ${data.tuna.calculated.toFixed(2)}cm</span>
+                                        </div>
+                                        <div class="flex justify-end items-center">
+                                            <span class="text-green-600 mr-3">차이</span>
+                                            <span class="font-bold ${data.tuna.difference < 1 ? 'text-green-600' : 'text-red-600'}">= ${data.tuna.difference.toFixed(2)}cm</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 퍼즐통 결과 -->
+                                <div class="bg-yellow-50 p-3 rounded-lg h-24 flex flex-col justify-center">
+                                    <div class="text-base space-y-1">
+                                        <div class="flex justify-end items-center">
+                                            <span class="text-yellow-600 mr-3">줄자로 측정한 원주</span>
+                                            <span class="font-bold text-yellow-800">= ${data.puzzle.actual}cm</span>
+                                        </div>
+                                        <div class="flex justify-end items-center">
+                                            <span class="text-yellow-600 mr-3">규칙으로 계산한 원주{측정한지름(${data.puzzle.diameter})×3.14}</span>
+                                            <span class="font-bold text-yellow-800">= ${data.puzzle.calculated.toFixed(2)}cm</span>
+                                        </div>
+                                        <div class="flex justify-end items-center">
+                                            <span class="text-yellow-600 mr-3">차이</span>
+                                            <span class="font-bold ${data.puzzle.difference < 1 ? 'text-green-600' : 'text-red-600'}">= ${data.puzzle.difference.toFixed(2)}cm</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
