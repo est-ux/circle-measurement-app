@@ -764,27 +764,37 @@
             </div>
             
             <!-- 활동 2 서브메뉴 -->
-            <div class="grid md:grid-cols-5 gap-8 mb-12">
-                <button onclick="showSubActivity('activity2-1')" class="card p-8 text-center hover:bg-blue-50">
-                    <div class="text-4xl mb-4">🎯</div>
-                    <div class="font-semibold text-xl">지름은 무엇일까?</div>
+            <div class="grid md:grid-cols-3 gap-12 mb-12">
+                <button onclick="showDiameterSubMenu()" class="card p-10 text-center hover:bg-blue-50">
+                    <div class="text-5xl mb-6">📏</div>
+                    <div class="font-semibold text-2xl">지름 측정하기</div>
                 </button>
-                <button onclick="showSubActivity('activity2-1-5')" class="card p-8 text-center hover:bg-purple-50">
-                    <div class="text-4xl mb-4">📐</div>
-                    <div class="font-semibold text-xl">지름 측정하는 법 알기</div>
+                <button onclick="showSubActivity('activity2-3')" class="card p-10 text-center hover:bg-purple-50">
+                    <div class="text-5xl mb-6">🔄</div>
+                    <div class="font-semibold text-2xl">원주가 가진 규칙 발견해보기</div>
                 </button>
-                <button onclick="showSubActivity('activity2-2')" class="card p-8 text-center hover:bg-green-50">
-                    <div class="text-4xl mb-4">📏</div>
-                    <div class="font-semibold text-xl">물건의 지름 측정해보기</div>
+                <button onclick="showSubActivity('activity2-4')" class="card p-10 text-center hover:bg-yellow-50">
+                    <div class="text-5xl mb-6">📝</div>
+                    <div class="font-semibold text-2xl">원주가 가진 규칙 기록하기</div>
                 </button>
-                <button onclick="showSubActivity('activity2-3')" class="card p-8 text-center hover:bg-purple-50">
-                    <div class="text-4xl mb-4">🔄</div>
-                    <div class="font-semibold text-xl">원주가 가진 규칙 발견해보기</div>
-                </button>
-                <button onclick="showSubActivity('activity2-4')" class="card p-8 text-center hover:bg-yellow-50">
-                    <div class="text-4xl mb-4">📝</div>
-                    <div class="font-semibold text-xl">원주가 가진 규칙 기록하기</div>
-                </button>
+            </div>
+            
+            <!-- 지름 측정하기 하위 메뉴 -->
+            <div id="diameter-submenu" class="hidden mb-12">
+                <div class="grid md:grid-cols-3 gap-8">
+                    <button onclick="showSubActivity('activity2-1')" class="card p-8 text-center hover:bg-blue-50">
+                        <div class="text-4xl mb-4">🎯</div>
+                        <div class="font-semibold text-xl">지름은 무엇일까?</div>
+                    </button>
+                    <button onclick="showSubActivity('activity2-1-5')" class="card p-8 text-center hover:bg-purple-50">
+                        <div class="text-4xl mb-4">📐</div>
+                        <div class="font-semibold text-xl">지름 측정하는 법 알기</div>
+                    </button>
+                    <button onclick="showSubActivity('activity2-2')" class="card p-8 text-center hover:bg-green-50">
+                        <div class="text-4xl mb-4">📏</div>
+                        <div class="font-semibold text-xl">물건의 지름 측정해보기</div>
+                    </button>
+                </div>
             </div>
             
             <!-- 활동 2-1: 지름이란? -->
@@ -1261,7 +1271,7 @@
                             
                             <div>
                                 <label class="block text-lg font-semibold mb-3">🏷️ 규칙(3.14...)의 이름을 무엇으로 하면 좋을까요?</label>
-                                <textarea id="pi-name" rows="5" placeholder="규칙(3.14...)이라는 수에 어떤 이름을 붙이면 좋을지 여러분의 생각을 써주세요." class="w-full p-4 border-2 border-gray-300 rounded-lg focus:border-blue-500 text-lg"></textarea>
+                                <textarea id="pi-name" rows="3" placeholder="규칙(3.14...)이라는 수에 어떤 이름을 붙이면 좋을지 여러분의 생각을 써주세요." class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 text-base"></textarea>
                             </div>
                             
                             <button onclick="submitPiName()" class="w-full btn-primary text-white py-5 rounded-lg font-bold text-xl">
@@ -1643,18 +1653,30 @@
             }
         }
         
+        function showDiameterSubMenu() {
+            const submenu = document.getElementById('diameter-submenu');
+            if (submenu.classList.contains('hidden')) {
+                submenu.classList.remove('hidden');
+            } else {
+                submenu.classList.add('hidden');
+            }
+        }
+        
         function showSubActivity(subActivityId) {
+            // 상위 레벨 활동(activity2-3, activity2-4)을 선택했을 때만 하위 메뉴 숨기기
+            if (subActivityId === 'activity2-3' || subActivityId === 'activity2-4') {
+                document.getElementById('diameter-submenu').classList.add('hidden');
+            }
+            
             // 모든 서브 활동 숨기기
-            document.getElementById('activity2-1').classList.remove('hidden');
+            document.getElementById('activity2-1').classList.add('hidden');
             document.getElementById('activity2-1-5').classList.add('hidden');
             document.getElementById('activity2-2').classList.add('hidden');
             document.getElementById('activity2-3').classList.add('hidden');
             document.getElementById('activity2-4').classList.add('hidden');
             
-            if (subActivityId !== 'activity2-1') {
-                document.getElementById('activity2-1').classList.add('hidden');
-                document.getElementById(subActivityId).classList.remove('hidden');
-            }
+            // 선택된 서브 활동 보이기
+            document.getElementById(subActivityId).classList.remove('hidden');
             
             if (subActivityId === 'activity2-1') {
                 initializeDiameterDemo();
@@ -1814,28 +1836,56 @@
                 return;
             }
             
-            let html = '';
+            // 표 헤더 생성
+            let html = `
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="bg-gradient-to-r from-green-500 to-green-600 text-white p-4">
+                        <h3 class="text-xl font-bold text-center">📊 우리 반 친구들의 원주 측정 결과</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left font-bold text-gray-700 border-b">모둠</th>
+                                    <th class="px-4 py-3 text-center font-bold text-blue-700 border-b">🥤 음료수 캔</th>
+                                    <th class="px-4 py-3 text-center font-bold text-green-700 border-b">🥫 참치 통조림</th>
+                                    <th class="px-4 py-3 text-center font-bold text-yellow-700 border-b">🧩 퍼즐통</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+            `;
+            
+            // 각 모둠별 데이터 행 생성
             for (const [team, data] of Object.entries(measurementData)) {
                 html += `
-                    <div class="bg-white p-4 rounded-xl shadow-lg border-l-4 border-green-500 mb-3">
-                        <h4 class="font-bold text-lg text-green-600 mb-3 text-center bg-green-50 py-2 rounded-lg">${team} - 원주 측정 결과</h4>
-                        <div class="grid grid-cols-1 gap-3">
-                            <div class="bg-blue-50 p-3 rounded-lg border-l-4 border-blue-400 flex justify-between items-center">
-                                <div class="font-semibold text-sm text-blue-700">🥤 음료수 캔</div>
-                                <div class="font-bold text-lg text-blue-600">원주: ${data.can}cm</div>
+                    <tr class="hover:bg-gray-50 border-b">
+                        <td class="px-4 py-3 font-bold text-gray-800 bg-gray-50">${team}</td>
+                        <td class="px-4 py-3 text-center">
+                            <div class="bg-blue-50 p-2 rounded-lg border-l-4 border-blue-400">
+                                <span class="font-bold text-blue-600">${data.can}cm</span>
                             </div>
-                            <div class="bg-green-50 p-3 rounded-lg border-l-4 border-green-400 flex justify-between items-center">
-                                <div class="font-semibold text-sm text-green-700">🥫 참치 통조림</div>
-                                <div class="font-bold text-lg text-green-600">원주: ${data.tuna}cm</div>
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            <div class="bg-green-50 p-2 rounded-lg border-l-4 border-green-400">
+                                <span class="font-bold text-green-600">${data.tuna}cm</span>
                             </div>
-                            <div class="bg-yellow-50 p-3 rounded-lg border-l-4 border-yellow-400 flex justify-between items-center">
-                                <div class="font-semibold text-sm text-yellow-700">🧩 퍼즐통</div>
-                                <div class="font-bold text-lg text-yellow-600">원주: ${data.puzzle}cm</div>
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            <div class="bg-yellow-50 p-2 rounded-lg border-l-4 border-yellow-400">
+                                <span class="font-bold text-yellow-600">${data.puzzle}cm</span>
                             </div>
-                        </div>
-                    </div>
+                        </td>
+                    </tr>
                 `;
             }
+            
+            html += `
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+            
             resultsDiv.innerHTML = html;
         }
         
@@ -2005,44 +2055,60 @@
                 return;
             }
             
-            let html = '';
+            // 표 헤더 생성
+            let html = `
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4">
+                        <h3 class="text-xl font-bold text-center">📏 우리 반 친구들의 지름 측정 결과</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left font-bold text-gray-700 border-b">모둠</th>
+                                    <th class="px-4 py-3 text-center font-bold text-blue-700 border-b">🥤 음료수 캔</th>
+                                    <th class="px-4 py-3 text-center font-bold text-green-700 border-b">🥫 참치 통조림</th>
+                                    <th class="px-4 py-3 text-center font-bold text-yellow-700 border-b">🧩 퍼즐통</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+            `;
+            
+            // 각 모둠별 데이터 행 생성
             for (const [team, data] of Object.entries(diameterData)) {
                 console.log(`${team} 데이터:`, data); // 디버깅용
                 html += `
-                    <div class="bg-white p-4 rounded-xl shadow-lg border-l-4 border-green-500 mb-3">
-                        <h4 class="font-bold text-lg text-green-600 mb-3 text-center bg-green-50 py-2 rounded-lg">${team} - 지름 측정 결과</h4>
-                        <div class="grid grid-cols-1 gap-3">
+                    <tr class="hover:bg-gray-50 border-b">
+                        <td class="px-4 py-3 font-bold text-gray-800 bg-gray-50">${team}</td>
+                        <td class="px-4 py-3 text-center">
                             <div class="bg-blue-50 p-3 rounded-lg border-l-4 border-blue-400">
-                                <div class="flex justify-between items-center mb-1">
-                                    <div class="font-semibold text-sm text-blue-700">🥤 음료수 캔</div>
-                                </div>
-                                <div class="flex justify-between text-sm">
-                                    <span class="text-blue-600">원주: ${data.canCirc || '측정 안됨'}cm</span>
-                                    <span class="font-bold text-blue-800">지름: ${data.canDiam || '입력 안됨'}cm</span>
-                                </div>
+                                <div class="text-sm text-blue-600 mb-1">원주: ${data.canCirc || '측정 안됨'}cm</div>
+                                <div class="font-bold text-blue-800">지름: ${data.canDiam || '입력 안됨'}cm</div>
                             </div>
+                        </td>
+                        <td class="px-4 py-3 text-center">
                             <div class="bg-green-50 p-3 rounded-lg border-l-4 border-green-400">
-                                <div class="flex justify-between items-center mb-1">
-                                    <div class="font-semibold text-sm text-green-700">🥫 참치 통조림</div>
-                                </div>
-                                <div class="flex justify-between text-sm">
-                                    <span class="text-green-600">원주: ${data.tunaCirc || '측정 안됨'}cm</span>
-                                    <span class="font-bold text-green-800">지름: ${data.tunaDiam || '입력 안됨'}cm</span>
-                                </div>
+                                <div class="text-sm text-green-600 mb-1">원주: ${data.tunaCirc || '측정 안됨'}cm</div>
+                                <div class="font-bold text-green-800">지름: ${data.tunaDiam || '입력 안됨'}cm</div>
                             </div>
+                        </td>
+                        <td class="px-4 py-3 text-center">
                             <div class="bg-yellow-50 p-3 rounded-lg border-l-4 border-yellow-400">
-                                <div class="flex justify-between items-center mb-1">
-                                    <div class="font-semibold text-sm text-yellow-700">🧩 퍼즐통</div>
-                                </div>
-                                <div class="flex justify-between text-sm">
-                                    <span class="text-yellow-600">원주: ${data.puzzleCirc || '측정 안됨'}cm</span>
-                                    <span class="font-bold text-yellow-800">지름: ${data.puzzleDiam || '입력 안됨'}cm</span>
-                                </div>
+                                <div class="text-sm text-yellow-600 mb-1">원주: ${data.puzzleCirc || '측정 안됨'}cm</div>
+                                <div class="font-bold text-yellow-800">지름: ${data.puzzleDiam || '입력 안됨'}cm</div>
                             </div>
-                        </div>
-                    </div>
+                        </td>
+                    </tr>
                 `;
             }
+            
+            html += `
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+            
             resultsDiv.innerHTML = html;
         }
         
@@ -2644,18 +2710,18 @@
                 <div class="grid grid-cols-3 gap-4">
                     <div class="bg-blue-50 p-4 rounded-lg text-center">
                         <div class="font-semibold text-lg">🥤 음료수 캔</div>
-                        <div class="text-base mt-2">실제 측정한 원주: ${circumData.can}cm</div>
-                        <div class="text-base">실제 측정한 지름: ${diamData.canDiam}cm</div>
+                        <div class="text-base mt-2">실제 측정한 원주: ${circumData.can || '측정 안됨'}cm</div>
+                        <div class="text-base">실제 측정한 지름: ${diamData.canDiam || '입력 안됨'}cm</div>
                     </div>
                     <div class="bg-green-50 p-4 rounded-lg text-center">
                         <div class="font-semibold text-lg">🥫 참치 통조림</div>
-                        <div class="text-base mt-2">실제 측정한 원주: ${circumData.tuna}cm</div>
-                        <div class="text-base">실제 측정한 지름: ${diamData.tunaDiam}cm</div>
+                        <div class="text-base mt-2">실제 측정한 원주: ${circumData.tuna || '측정 안됨'}cm</div>
+                        <div class="text-base">실제 측정한 지름: ${diamData.tunaDiam || '입력 안됨'}cm</div>
                     </div>
                     <div class="bg-yellow-50 p-4 rounded-lg text-center">
                         <div class="font-semibold text-lg">🧩 퍼즐통</div>
-                        <div class="text-base mt-2">실제 측정한 원주: ${circumData.puzzle}cm</div>
-                        <div class="text-base">실제 측정한 지름: ${diamData.puzzleDiam}cm</div>
+                        <div class="text-base mt-2">실제 측정한 원주: ${circumData.puzzle || '측정 안됨'}cm</div>
+                        <div class="text-base">실제 측정한 지름: ${diamData.puzzleDiam || '입력 안됨'}cm</div>
                     </div>
                 </div>
             `;
@@ -3034,19 +3100,30 @@
                 const previousFormula = document.getElementById('previous-formula-3-3');
                 
                 if (selectedTeam) {
+                    // 데이터 존재 여부 확인
+                    if (!measurementData[selectedTeam] || !diameterData[selectedTeam]) {
+                        alert('선택한 모둠의 측정 데이터가 없습니다. 활동 1-2와 활동 2-2를 먼저 완료해주세요!');
+                        existingDataDiv.style.display = 'none';
+                        document.getElementById('pi-name').value = '';
+                        return;
+                    }
+                    
                     // 이전 활동 데이터 표시
                     let hasData = false;
                     let measurementHtml = '';
                     let formulaHtml = '';
                     
-                    // 지름 데이터 표시
-                    if (diameterData[selectedTeam]) {
-                        const data = diameterData[selectedTeam];
+                    // 측정 데이터 표시 (원주 + 지름)
+                    if (measurementData[selectedTeam] || diameterData[selectedTeam]) {
+                        const circumData = measurementData[selectedTeam] || {};
+                        const diamData = diameterData[selectedTeam] || {};
                         measurementHtml = `
-                            <div class="grid grid-cols-3 gap-2 text-xs">
-                                <div>🥫 참치: 둘레 ${data.tunaCirc}cm, 지름 ${data.tunaDiam}cm</div>
-                                <div>🐟 꽁치: 둘레 ${data.sauryCirc}cm, 지름 ${data.sauryDiam}cm</div>
-                                <div>🥤 음료수: 둘레 ${data.canCirc}cm, 지름 ${data.canDiam}cm</div>
+                            <div class="space-y-3 text-lg">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="font-semibold">🥤 음료수: 지름 ${diamData.canDiam || '입력 안됨'}cm, 원주 ${circumData.can || '측정 안됨'}cm</div>
+                                    <div class="font-semibold">🥫 참치: 지름 ${diamData.tunaDiam || '입력 안됨'}cm, 원주 ${circumData.tuna || '측정 안됨'}cm</div>
+                                </div>
+                                <div class="font-semibold">🧩 퍼즐통: 지름 ${diamData.puzzleDiam || '입력 안됨'}cm, 원주 ${circumData.puzzle || '측정 안됨'}cm</div>
                             </div>
                         `;
                         hasData = true;
@@ -3054,7 +3131,7 @@
                     
                     // 수식 데이터 표시
                     if (formulaData[selectedTeam]) {
-                        formulaHtml = `<div class="font-semibold">발견한 수식: ${formulaData[selectedTeam].formula}</div>`;
+                        formulaHtml = `<div class="text-right"><span class="font-bold text-xl text-blue-600">발견한 수식:</span> <span class="font-bold text-xl text-green-600">${formulaData[selectedTeam].formula}</span></div>`;
                         hasData = true;
                     }
                     
@@ -3086,23 +3163,50 @@
                 return;
             }
             
-            let html = '';
+            // 표 헤더 생성
+            let html = `
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white p-4">
+                        <h3 class="text-xl font-bold text-center">🏷️ 우리반 친구들의 이름 제안</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left font-bold text-gray-700 border-b">모둠</th>
+                                    <th class="px-4 py-3 text-center font-bold text-blue-700 border-b">발견한 수식</th>
+                                    <th class="px-4 py-3 text-center font-bold text-green-700 border-b">제안된 이름</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+            `;
+            
+            // 각 모둠별 데이터 행 생성
             for (const [team, data] of Object.entries(piNameData)) {
                 html += `
-                    <div class="bg-white p-4 rounded-xl shadow-lg border-l-4 border-yellow-500 mb-3">
-                        <h4 class="font-bold text-lg text-yellow-600 mb-3 text-center bg-yellow-50 py-2 rounded-lg">${team}</h4>
-                        <div class="bg-blue-50 p-4 rounded-xl mb-3 border-l-4 border-blue-400">
-                            <div class="font-bold text-sm text-blue-700 mb-2">🏷️ 규칙(3.14...)의 이름 제안</div>
-                            <div class="text-base font-semibold text-blue-800 leading-relaxed">${data.piName}</div>
-                        </div>
-                        ${data.formula ? `
-                        <div class="bg-gray-50 p-3 rounded-lg border-l-4 border-gray-400">
-                            <div class="font-bold text-sm text-gray-700">발견한 수식: <span class="text-base text-gray-800">${data.formula}</span></div>
-                        </div>
-                        ` : ''}
-                    </div>
+                    <tr class="hover:bg-gray-50 border-b">
+                        <td class="px-4 py-3 font-bold text-gray-800 bg-gray-50">${team}</td>
+                        <td class="px-4 py-3 text-center">
+                            <div class="bg-blue-50 p-3 rounded-lg border-l-4 border-blue-400">
+                                <div class="font-bold text-blue-800 text-sm">${data.formula || '수식 없음'}</div>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            <div class="bg-green-50 p-3 rounded-lg border-l-4 border-green-400">
+                                <div class="font-bold text-green-800 text-sm leading-relaxed">${data.piName}</div>
+                            </div>
+                        </td>
+                    </tr>
                 `;
             }
+            
+            html += `
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+            
             resultsDiv.innerHTML = html;
         }
         
