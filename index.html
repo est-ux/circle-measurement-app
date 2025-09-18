@@ -3088,9 +3088,30 @@
             }
         }
         
+        // 수식 데이터 로드 함수
+        function loadFormulaData() {
+            // Firebase에서 수식 데이터 로드
+            const formulaQuery = window.firebaseQuery(window.firebaseCollection(window.firebaseDb, 'formulas'), window.firebaseOrderBy('timestamp', 'desc'));
+            window.firebaseOnSnapshot(formulaQuery, (snapshot) => {
+                console.log('수식 데이터 업데이트:', snapshot.size, '개 문서');
+                formulaData = {};
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    formulaData[data.team] = {
+                        formula: data.formula
+                    };
+                });
+            }, (error) => {
+                console.error('수식 데이터 리스너 오류:', error);
+            });
+        }
+        
         // 활동 3-3: 파이 이름 데이터 로드
         function loadPiNameData() {
             displayPiNameResults();
+            
+            // 수식 데이터도 함께 로드
+            loadFormulaData();
             
             // 모둠 선택 시 데이터 로드 이벤트 추가
             document.getElementById('team-select-3-3').addEventListener('change', function() {
@@ -3132,6 +3153,9 @@
                     // 수식 데이터 표시
                     if (formulaData[selectedTeam]) {
                         formulaHtml = `<div class="text-right"><span class="font-bold text-xl text-blue-600">발견한 수식:</span> <span class="font-bold text-xl text-green-600">${formulaData[selectedTeam].formula}</span></div>`;
+                        hasData = true;
+                    } else {
+                        formulaHtml = `<div class="text-right"><span class="font-bold text-xl text-blue-600">발견한 수식:</span> <span class="font-bold text-xl text-gray-500">수식 없음</span></div>`;
                         hasData = true;
                     }
                     
